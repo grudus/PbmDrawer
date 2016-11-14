@@ -20,9 +20,9 @@ public class InputField extends JTextField implements FocusListener {
     private boolean error;
     private int maxLength;
 
-    private Color hintColor = PbmDrawerProperties.DEFAULT_HINT_COLOR;
-    private Color textColor = PbmDrawerProperties.DEFAULT_TEXT_COLOR;
-    private Color errorBorderColor = PbmDrawerProperties.DEFAULT_ERROR_BORDER_COLOR;
+    private Color hintColor;
+    private Color textColor;
+    private Color errorBorderColor;
 
     private Border normalBorder;
 
@@ -31,10 +31,14 @@ public class InputField extends JTextField implements FocusListener {
         TEXT
     }
 
-    public InputField(String hint, InputType inputType) {
+    public InputField(PbmDrawerProperties properties, String hint, InputType inputType) {
         this.hint = hint;
         this.inputType = inputType;
         addFocusListener(this);
+
+        hintColor = properties.getHintColor();
+        textColor = properties.getTextColor();
+        errorBorderColor = properties.getErrorBorderColor();
 
         normalBorder = getBorder();
 
@@ -74,6 +78,12 @@ public class InputField extends JTextField implements FocusListener {
                 if (error) showError(false);
             }
         });
+    }
+
+    @Override
+    public void setText(String s) {
+        setForeground(textColor);
+        super.setText(s);
     }
 
     public void setMaxLength(int length) {

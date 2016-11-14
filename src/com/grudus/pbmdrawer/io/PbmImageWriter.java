@@ -1,7 +1,6 @@
 package com.grudus.pbmdrawer.io;
 
 
-import com.grudus.pbmdrawer.PbmDrawerProperties;
 import com.grudus.pbmdrawer.components.MainPanel;
 
 import java.awt.*;
@@ -19,20 +18,23 @@ public class PbmImageWriter {
     }
 
     public void chooseFileAndSaveImage() {
-        FileDialog fd = new FileDialog(new Frame(), "Choose a file", FileDialog.SAVE);
+        FileDialog fd = new FileDialog(new Frame(), panel.properties().getFileDialogTitle(), FileDialog.SAVE);
 
+        fd.setDirectory(panel.properties().getSaveDirectory());
         fd.setVisible(true);
         String filename = fd.getFile();
 
 
-        if (filename != null)
+        if (filename != null) {
             saveImage(new File(fd.getDirectory(), filename));
+            panel.properties().setSaveDirectory(fd.getDirectory());
+        }
     }
 
     public void saveImage(File file) {
 
-        if (!file.getAbsolutePath().endsWith(PbmDrawerProperties.SAVING_IMAGE_FORMAT))
-            file = new File(file.getAbsolutePath() + PbmDrawerProperties.SAVING_IMAGE_FORMAT);
+        if (!file.getAbsolutePath().endsWith(panel.properties().getImageFormat()))
+            file = new File(file.getAbsolutePath() + panel.properties().getImageFormat());
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(generateStringToWrite());
@@ -49,6 +51,7 @@ public class PbmImageWriter {
 
         builder.append("P1")
                 .append("\n")
+                .append("#Created by grudus https://github.com/grudus\n")
                 .append(cols)
                 .append(" ")
                 .append(rows)
@@ -69,6 +72,6 @@ public class PbmImageWriter {
         if (!directory.isDirectory())
             return;
         int index = directory.listFiles().length + 1;
-        saveImage(new File(directory.getAbsolutePath(), "grudus" + index));
+        saveImage(new File(directory.getAbsolutePath(), panel.properties().getFastSavingFileName() + index));
     }
 }

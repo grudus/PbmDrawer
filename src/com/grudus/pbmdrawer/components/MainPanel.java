@@ -18,10 +18,11 @@ public class MainPanel extends JPanel {
 
     public MainPanel() {
         properties = new PbmDrawerProperties();
-        setBackground(PbmDrawerProperties.DEFAULT_MAIN_BACKGROUND_COLOR);
+        setBackground(properties.getMainBackgroundColor());
 
 
-        drawerColumns = drawerRows = 28;
+        drawerColumns = properties.getGridColumns();
+        drawerRows = properties.getGridRows();
 
         MAIN_LAYOUT = new BorderLayout();
         setLayout(MAIN_LAYOUT);
@@ -56,6 +57,8 @@ public class MainPanel extends JPanel {
         this.drawerRows = rows;
         this.drawerColumns = columns;
         drawer.changeGrid(rows, columns);
+        properties.setGridRows(rows);
+        properties.setGridColumns(columns);
     }
 
     public void setFastSaving(boolean fastSaving) {

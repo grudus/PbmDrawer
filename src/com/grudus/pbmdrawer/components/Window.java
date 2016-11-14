@@ -5,26 +5,19 @@ import java.awt.*;
 
 public class Window {
 
-    public static final int MIN_WIDTH = 200;
-    public static final int MIN_HEIGHT = 100;
-
-    public static final  int DEFAULT_WIDTH = 800;
-    public static final  int DEFAULT_HEIGHT = 600;
 
     private final JFrame frame;
 
-    public Window(String title) {
+    public Window(String title, Dimension size) {
         frame = new JFrame(title);
+        frame.setSize(size);
         init();
     }
 
     private void init() {
-        frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         //todo change later
-        frame.setMinimumSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
-
+        frame.setMinimumSize(frame.getSize());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
 

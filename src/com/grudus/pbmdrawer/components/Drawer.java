@@ -1,6 +1,5 @@
 package com.grudus.pbmdrawer.components;
 
-import com.grudus.pbmdrawer.PbmDrawerProperties;
 import com.grudus.pbmdrawer.io.PbmImageWriter;
 
 import javax.swing.*;
@@ -24,17 +23,21 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     private boolean[][] paintedPoints;
     private Tile repaintedTile;
 
-    private final Color LINE_COLOR = PbmDrawerProperties.DEFAULT_GRID_COLOR;
-    private final Color TILE_COLOR = PbmDrawerProperties.DEFAULT_TILE_COLOR;
-    private final Color BACKGROUND_COLOR = PbmDrawerProperties.DEFAULT_DRAWER_BACKGROUND_COLOR;
+    private Color lineColor;
+    private Color tileColor;
+    private Color backgroundColor;
 
 
     public Drawer(MainPanel mainPanel, int columns, int rows) {
         this.mainPanel = mainPanel;
         this.columns = columns;
         this.rows = rows;
+        
+        lineColor = mainPanel.properties().getGridColor();
+        tileColor = mainPanel.properties().getTileColor();
+        backgroundColor = mainPanel.properties().getDrawerBackgroundColor();
 
-        setBackground(BACKGROUND_COLOR);
+        setBackground(backgroundColor);
         paintedPoints = new boolean[rows][columns];
 
         addComponentListener(new ComponentAdapter() {
@@ -58,11 +61,10 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println("paint " + getWidth());
 
 
         if (repaintedTile != null && !refresh) {
-            g.setColor(TILE_COLOR);
+            g.setColor(tileColor);
             g.fillRect(repaintedTile.getRoundedX(), repaintedTile.getRoundedY(), repaintedTile.getRundedWidth(), repaintedTile.getRoundedHeight());
         }
 
@@ -79,7 +81,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     }
 
     private void drawTiles(Graphics g) {
-        g.setColor(TILE_COLOR);
+        g.setColor(tileColor);
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < columns; c++) {
@@ -91,7 +93,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     }
 
     private void drawLines(Graphics g) {
-        g.setColor(LINE_COLOR);
+        g.setColor(lineColor);
         for (int i = 0; i < columns; i++) {
             g.drawLine((int) (columnWidth + i * columnWidth), 0, (int) (columnWidth + i * columnWidth), getHeight());
         }

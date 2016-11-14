@@ -1,6 +1,5 @@
 package com.grudus.pbmdrawer.components;
 
-import com.grudus.pbmdrawer.PbmDrawerProperties;
 import com.grudus.pbmdrawer.components.dialogs.ResizeDialog;
 import com.grudus.pbmdrawer.io.PbmImageWriter;
 
@@ -22,7 +21,7 @@ public class BottomSettings extends JPanel {
     private static final String[] BUTTON_IMAGES = {"clear_all", "save", "grid", "resize", "fast_save"};
     private static final JLabel[] BUTTONS = new JLabel[BUTTON_IMAGES.length];
 
-    private int height = Window.DEFAULT_HEIGHT / 14;
+    private int height;
     private boolean fastSaving;
 
     public BottomSettings(MainPanel mainPanel) {
@@ -31,10 +30,12 @@ public class BottomSettings extends JPanel {
         iconsPath = mainPanel.properties().getIconPath();
         iconsFormat = mainPanel.properties().getIconFormat();
 
-        setPreferredSize(new Dimension(Window.DEFAULT_WIDTH, height));
+        height = (int) (mainPanel.properties().getWindowSize().getHeight() / 14);
+
+        setPreferredSize(new Dimension((int)mainPanel.properties().getWindowSize().getWidth(), height));
         setLayout(new GridBagLayout());
 
-        setBackground(PbmDrawerProperties.DEFAULT_MAIN_BACKGROUND_COLOR);
+        setBackground(mainPanel.properties().getMainBackgroundColor());
 
         addButtons();
         addListeners();
@@ -108,8 +109,7 @@ public class BottomSettings extends JPanel {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 super.mouseClicked(mouseEvent);
-                new ResizeDialog((
-                        mainPanel::changeGrid)).setVisible(true);
+                new ResizeDialog(mainPanel.properties(), (mainPanel::changeGrid)).setVisible(true);
             }
         });
 
@@ -130,6 +130,7 @@ public class BottomSettings extends JPanel {
             setBackground(Color.RED);
 
             FileDialog fd = new FileDialog(new Frame(), "Choose a file", FileDialog.SAVE);
+            fd.setDirectory(mainPanel.properties().getFastSavingDirectory());
             fd.setVisible(true);
             String filename = fd.getFile();
 
@@ -138,7 +139,7 @@ public class BottomSettings extends JPanel {
         }
 
         else {
-            setBackground(PbmDrawerProperties.DEFAULT_MAIN_BACKGROUND_COLOR);
+            setBackground(mainPanel.properties().getMainBackgroundColor());
         }
 
         mainPanel.setFastSaving(fastSaving);

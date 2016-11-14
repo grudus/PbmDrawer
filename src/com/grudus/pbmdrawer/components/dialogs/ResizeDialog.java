@@ -20,18 +20,24 @@ public class ResizeDialog extends JDialog {
     private JLabel okButton;
     private JLabel cancelButton;
 
-    private int height = 20;
+    private int height;
 
     private OnOkListener listener;
+    private PbmDrawerProperties properties;
 
+    public ResizeDialog(PbmDrawerProperties properties, OnOkListener listener) {
+        this.properties = properties;
+        int initWidth = properties.getResizeDialogWidth();
+        int initHeight = properties.getResizeDialogHeight();
 
-    public ResizeDialog(OnOkListener listener) {
-        this.setSize(240, 140);
+        this.setSize(initWidth, initHeight);
         this.setFocusable(true);
         this.listener = listener;
 
+        height = properties.getButtonIconSize();
+
         getRootPane ().setOpaque (false);
-        getContentPane ().setBackground (PbmDrawerProperties.DEFAULT_MAIN_BACKGROUND_COLOR);
+        getContentPane ().setBackground (properties.getMainBackgroundColor());
 
         setLocationRelativeTo(null);
 
@@ -48,14 +54,16 @@ public class ResizeDialog extends JDialog {
         gbc.weightx = 1;
 
 
-        rows = new InputField("Rows", InputField.InputType.NUMBERS);
+        rows = new InputField(properties, "Rows", InputField.InputType.NUMBERS);
+        rows.setText(properties.getGridRows() + "");
         rows.setMaxLength(3);
 
         add(rows, gbc);
 
         gbc.gridy = 1;
-        columns = new InputField("Columns", InputField.InputType.NUMBERS);
+        columns = new InputField(properties, "Columns", InputField.InputType.NUMBERS);
         columns.setMaxLength(3);
+        columns.setText(properties.getGridColumns() + "");
         add(columns, gbc);
 
 
@@ -80,8 +88,8 @@ public class ResizeDialog extends JDialog {
 
     private void addIcons() {
         try {
-            Image okImg = ImageIO.read(new File("res/icons/buttons/done.png")).getScaledInstance(height, height, Image.SCALE_FAST);
-            Image cancelImg = ImageIO.read(new File("res/icons/buttons/close.png")).getScaledInstance(height, height, Image.SCALE_FAST);
+            Image okImg = ImageIO.read(new File(properties.getIconPath() + "/buttons/done.png")).getScaledInstance(height, height, Image.SCALE_FAST);
+            Image cancelImg = ImageIO.read(new File(properties.getIconPath() + "/buttons/close.png")).getScaledInstance(height, height, Image.SCALE_FAST);
 
             okButton.setIcon(new ImageIcon(okImg));
             cancelButton.setIcon(new ImageIcon(cancelImg));
