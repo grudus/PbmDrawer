@@ -7,9 +7,13 @@ import java.awt.event.*;
 
 public class Drawer extends JPanel implements MouseListener, MouseMotionListener {
 
+    private final JPanel mainPanel;
+
     private int columns, rows;
     private double tileWidth, tileHeight;
     private boolean isResized;
+
+    private boolean gridIsEnabled;
 
     private boolean[][] paintedPoints;
     private Tile repaintedTile;
@@ -19,7 +23,8 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     private final Color BACKGROUND_COLOR = new Color(0xFA, 0xFA, 0xFA);
 
 
-    public Drawer(int columns, int rows) {
+    public Drawer(JPanel mainPanel, int columns, int rows) {
+        this.mainPanel = mainPanel;
         this.columns = columns;
         this.rows = rows;
 
@@ -37,6 +42,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         addMouseListener(this);
         addMouseMotionListener(this);
 
+        gridIsEnabled = true;
     }
 
 
@@ -61,7 +67,8 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
     private void handleResized(Graphics g) {
         drawTiles(g);
-        drawLines(g);
+        if (gridIsEnabled)
+            drawLines(g);
     }
 
     private void drawTiles(Graphics g) {
@@ -109,6 +116,15 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
     }
 
+    public void clearAll() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++)
+                paintedPoints[i][j] = false;
+        }
+        isResized = true;
+        repaint();
+    }
+
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
         drawRect(mouseEvent);
@@ -137,6 +153,20 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
     @Override
     public void mouseMoved(MouseEvent mouseEvent) {
+
+    }
+
+    public boolean[][] getPaintedPoints() {
+        return paintedPoints;
+    }
+
+    public void changeGridEnabled() {
+        if (gridIsEnabled)
+            gridIsEnabled = false;
+        else
+            gridIsEnabled = true;
+        isResized = true;
+        repaint();
 
     }
 }

@@ -22,10 +22,12 @@ public class Window {
         frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        //todo change later
+        frame.setMinimumSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
+
     }
 
 
