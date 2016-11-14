@@ -2,41 +2,141 @@ package com.grudus.pbmdrawer.components;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 
-public class Drawer extends JPanel {
+public class Drawer extends JPanel implements MouseListener, MouseMotionListener {
 
     private int columns, rows;
+    private double tileWidth, tileHeight;
+    private boolean isResized;
 
-    private int tileWidth, tileHeight;
+    private boolean[][] paintedPoints;
+    private Tile repaintedTile;
+
+    private final Color LINE_COLOR = new Color(0x61, 0x61, 0x61, 0x61);
+    private final Color TILE_COLOR = new Color(0x21, 0x21, 0x21);
+    private final Color BACKGROUND_COLOR = new Color(0xFA, 0xFA, 0xFA);
 
 
     public Drawer(int columns, int rows) {
         this.columns = columns;
         this.rows = rows;
 
-        System.err.println(getWidth());
+        setBackground(BACKGROUND_COLOR);
+        paintedPoints = new boolean[rows][columns];
 
-        setBackground(Color.WHITE);
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent componentEvent) {
+                super.componentResized(componentEvent);
+                isResized = true;
+            }
+        });
+
+        addMouseListener(this);
+        addMouseMotionListener(this);
+
     }
-
-
 
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        tileWidth = getWidth() / columns;
-        tileHeight = getHeight() / rows;
+        tileWidth = (double) getWidth() / columns;
+        tileHeight = (double) getHeight() / rows;
 
-        for (int i = 0; i <= columns; i++) {
-            g.drawLine(i*tileWidth, 0, i*tileWidth, getHeight());
+
+        if (repaintedTile != null && !isResized) {
+            g.setColor(TILE_COLOR);
+            g.fillRect(repaintedTile.getRoundedX(), repaintedTile.getRoundedY(), repaintedTile.getRundedWidth(), repaintedTile.getRoundedHeight());
         }
 
-        for (int i = 0; i <= rows; i++) {
-            g.drawLine(0, i * tileHeight, getWidth(), i * tileHeight);
+        if (isResized) {
+            handleResized(g);
+            isResized = false;
         }
+    }
+
+    private void handleResized(Graphics g) {
+        drawTiles(g);
+        drawLines(g);
+    }
+
+    private void drawTiles(Graphics g) {
+        g.setColor(TILE_COLOR);
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < columns; c++) {
+                if (paintedPoints[r][c]) {
+                    g.fillRect((int) (c * tileWidth+0.5), (int) (r * tileHeight+0.5), (int)(tileWidth+0.5), (int)(tileHeight+0.5));
+                }
+            }
+        }
+    }
+
+    private void drawLines(Graphics g) {
+        g.setColor(LINE_COLOR);
+        for (int i = 0; i < columns; i++) {
+            g.drawLine((int) (tileWidth + i * tileWidth), 0, (int) (tileWidth + i * tileWidth), getHeight());
+        }
+
+        for (int i = 0; i < rows; i++) {
+            g.drawLine(0, (int) (tileHeight + i * tileHeight), getWidth(), (int) (tileHeight + i * tileHeight));
+        }
+    }
+
+
+    private void drawRect(MouseEvent mouseEvent) {
+        int x = mouseEvent.getX();
+        int y = mouseEvent.getY();
+
+        if (x < 0 || y < 0)
+            return;
+
+        drawRect(x, y);
+    }
+
+    private void drawRect(int x, int y) {
+        int tileX = (int) (x / tileWidth);
+        int tileY = (int) (y / tileHeight);
+        if (!paintedPoints[tileY][tileX]) {
+            paintedPoints[tileY][tileX] = true;
+            repaintedTile = new Tile(tileX * tileWidth, tileY * tileHeight, tileWidth, tileHeight);
+            repaint(repaintedTile.toRectangle());
+        }
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        drawRect(mouseEvent);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent mouseEvent) {
+        drawRect(mouseEvent);
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent mouseEvent) {
 
     }
 }
