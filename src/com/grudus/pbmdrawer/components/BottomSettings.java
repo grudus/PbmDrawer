@@ -1,5 +1,7 @@
 package com.grudus.pbmdrawer.components;
 
+import com.grudus.pbmdrawer.components.dialogs.ResizeDialog;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +20,7 @@ public class BottomSettings extends JPanel {
     private JLabel clearAllButton;
     private JLabel saveButton;
     private JLabel gridButton;
+    private JLabel resizeButton;
 
     private int height = Window.DEFAULT_HEIGHT / 14;
 
@@ -39,6 +42,7 @@ public class BottomSettings extends JPanel {
         gridButton = new JLabel();
         saveButton = new JLabel();
         clearAllButton = new JLabel();
+        resizeButton = new JLabel();
 
         addIcons();
 
@@ -54,6 +58,9 @@ public class BottomSettings extends JPanel {
         gbc.gridx = 2;
         add(saveButton, gbc);
 
+        gbc.gridx = 3;
+        add(resizeButton, gbc);
+
 
     }
 
@@ -62,15 +69,18 @@ public class BottomSettings extends JPanel {
             Image clearImage = ImageIO.read(new File("res/icons/clear_all.png")).getScaledInstance(height, height, Image.SCALE_FAST);
             Image saveImage = ImageIO.read(new File("res/icons/save.png")).getScaledInstance(height, height, Image.SCALE_FAST);
             Image gridImage = ImageIO.read(new File("res/icons/grid.png")).getScaledInstance(height, height, Image.SCALE_FAST);
+            Image resizeImage = ImageIO.read(new File("res/icons/resize.png")).getScaledInstance(height, height, Image.SCALE_FAST);
 
             clearAllButton.setIcon(new ImageIcon(clearImage));
             saveButton.setIcon(new ImageIcon(saveImage));
             gridButton.setIcon(new ImageIcon(gridImage));
+            resizeButton.setIcon(new ImageIcon(resizeImage));
         } catch (IOException ex) {
             System.err.println("Cannot read image " + ex.getMessage());
             clearAllButton.setText("Clear");
             saveButton.setText("Save");
             gridButton.setText("Grid");
+            resizeButton.setText("Resize");
         }
     }
 
@@ -96,6 +106,15 @@ public class BottomSettings extends JPanel {
             public void mouseClicked(MouseEvent mouseEvent) {
                 super.mouseClicked(mouseEvent);
                 mainPanel.changeGridEnable();
+            }
+        });
+
+        resizeButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                super.mouseClicked(mouseEvent);
+                new ResizeDialog((
+                        (rows, columns) -> mainPanel.changeGrid(rows, columns))).setVisible(true);
             }
         });
     }

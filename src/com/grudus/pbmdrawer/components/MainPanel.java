@@ -47,4 +47,10 @@ public class MainPanel extends JPanel {
     public void changeGridEnable() {
         drawer.changeGridEnabled();
     }
+
+    public void changeGrid(int rows, int columns) {
+        this.drawerRows = rows;
+        this.drawerColumns = columns;
+        drawer.changeGrid(rows, columns);
+    }
 }

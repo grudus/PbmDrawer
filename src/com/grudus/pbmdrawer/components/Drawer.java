@@ -169,4 +169,13 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         repaint();
 
     }
+
+    public void changeGrid(int rows, int columns) {
+        this.rows = rows;
+        this.columns = columns;
+        this.paintedPoints = new boolean[rows][columns];
+        repaintedTile = null;
+        isResized = true;
+        repaint();
+    }
 }
