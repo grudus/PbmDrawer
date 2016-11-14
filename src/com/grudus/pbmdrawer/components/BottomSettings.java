@@ -1,15 +1,15 @@
 package com.grudus.pbmdrawer.components;
 
+import com.grudus.pbmdrawer.PbmDrawerProperties;
 import com.grudus.pbmdrawer.components.dialogs.ResizeDialog;
+import com.grudus.pbmdrawer.io.PbmImageWriter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 
@@ -17,20 +17,24 @@ public class BottomSettings extends JPanel {
 
     private final MainPanel mainPanel;
 
-    private JLabel clearAllButton;
-    private JLabel saveButton;
-    private JLabel gridButton;
-    private JLabel resizeButton;
+    private String iconsPath;
+    private String iconsFormat;
+    private static final String[] BUTTON_IMAGES = {"clear_all", "save", "grid", "resize", "fast_save"};
+    private static final JLabel[] BUTTONS = new JLabel[BUTTON_IMAGES.length];
 
     private int height = Window.DEFAULT_HEIGHT / 14;
+    private boolean fastSaving;
 
     public BottomSettings(MainPanel mainPanel) {
         this.mainPanel = mainPanel;
 
+        iconsPath = mainPanel.properties().getIconPath();
+        iconsFormat = mainPanel.properties().getIconFormat();
+
         setPreferredSize(new Dimension(Window.DEFAULT_WIDTH, height));
         setLayout(new GridBagLayout());
 
-        setBackground(MainPanel.BACKGROUND_COLOR);
+        setBackground(PbmDrawerProperties.DEFAULT_MAIN_BACKGROUND_COLOR);
 
         addButtons();
         addListeners();
@@ -39,53 +43,41 @@ public class BottomSettings extends JPanel {
     private void addButtons() {
         GridBagConstraints gbc = new GridBagConstraints();
 
-        gridButton = new JLabel();
-        saveButton = new JLabel();
-        clearAllButton = new JLabel();
-        resizeButton = new JLabel();
-
-        addIcons();
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        add(clearAllButton, gbc);
+        gbc.gridy = 0;
 
-        gbc.gridx = 1;
-        add(gridButton, gbc);
+        for (int i = 0; i < BUTTONS.length; i++) {
+            BUTTONS[i] = new JLabel();
+            gbc.gridx = i;
+            add(BUTTONS[i], gbc);
+        }
 
-        gbc.gridx = 2;
-        add(saveButton, gbc);
-
-        gbc.gridx = 3;
-        add(resizeButton, gbc);
-
+        try {
+            addIcons();
+        } catch (IOException e) {
+            addLabels();
+        }
 
     }
 
-    private void addIcons() {
-        try {
-            Image clearImage = ImageIO.read(new File("res/icons/clear_all.png")).getScaledInstance(height, height, Image.SCALE_FAST);
-            Image saveImage = ImageIO.read(new File("res/icons/save.png")).getScaledInstance(height, height, Image.SCALE_FAST);
-            Image gridImage = ImageIO.read(new File("res/icons/grid.png")).getScaledInstance(height, height, Image.SCALE_FAST);
-            Image resizeImage = ImageIO.read(new File("res/icons/resize.png")).getScaledInstance(height, height, Image.SCALE_FAST);
+    private void addLabels() {
+        for (int i = 0; i < BUTTON_IMAGES.length; i++) {
+            BUTTONS[i].setText(BUTTON_IMAGES[i]);
+        }
+    }
 
-            clearAllButton.setIcon(new ImageIcon(clearImage));
-            saveButton.setIcon(new ImageIcon(saveImage));
-            gridButton.setIcon(new ImageIcon(gridImage));
-            resizeButton.setIcon(new ImageIcon(resizeImage));
-        } catch (IOException ex) {
-            System.err.println("Cannot read image " + ex.getMessage());
-            clearAllButton.setText("Clear");
-            saveButton.setText("Save");
-            gridButton.setText("Grid");
-            resizeButton.setText("Resize");
+    private void addIcons() throws IOException {
+        for (int i = 0; i < BUTTON_IMAGES.length; i++) {
+            Image img = ImageIO.read(new File(iconsPath + BUTTON_IMAGES[i] + iconsFormat))
+                    .getScaledInstance(height, height, Image.SCALE_FAST);
+            BUTTONS[i].setIcon(new ImageIcon(img));
         }
     }
 
     private void addListeners() {
-        clearAllButton.addMouseListener(new MouseAdapter() {
+        //clear all
+        BUTTONS[0].addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 super.mouseClicked(mouseEvent);
@@ -93,15 +85,17 @@ public class BottomSettings extends JPanel {
             }
         });
 
-        saveButton.addMouseListener(new MouseAdapter() {
+        //save
+        BUTTONS[1].addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 super.mouseClicked(mouseEvent);
-                saveFile();
+                new PbmImageWriter(mainPanel).chooseFileAndSaveImage();
             }
         });
 
-        gridButton.addMouseListener(new MouseAdapter() {
+        //show/hide grid
+        BUTTONS[2].addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 super.mouseClicked(mouseEvent);
@@ -109,55 +103,46 @@ public class BottomSettings extends JPanel {
             }
         });
 
-        resizeButton.addMouseListener(new MouseAdapter() {
+        //change number of columns / rows
+        BUTTONS[3].addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 super.mouseClicked(mouseEvent);
                 new ResizeDialog((
-                        (rows, columns) -> mainPanel.changeGrid(rows, columns))).setVisible(true);
+                        mainPanel::changeGrid)).setVisible(true);
+            }
+        });
+
+        // fast saving
+        BUTTONS[4].addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                super.mouseClicked(mouseEvent);
+                enableFastSaving(!fastSaving);
             }
         });
     }
 
-    private void saveFile() {
-        FileDialog fd = new FileDialog(new Frame(), "Choose a file", FileDialog.SAVE);
+    private void enableFastSaving(boolean b) {
+        fastSaving = b;
 
-        fd.setVisible(true);
-        String filename = fd.getFile();
+        if (fastSaving) {
+            setBackground(Color.RED);
 
+            FileDialog fd = new FileDialog(new Frame(), "Choose a file", FileDialog.SAVE);
+            fd.setVisible(true);
+            String filename = fd.getFile();
 
-        if (filename == null)
-            System.err.println("You cancelled the choice");
-        else {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fd.getDirectory(), filename)))) {
-                writer.write(generateStringToWrite());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            if (filename != null)
+                mainPanel.properties().setFastSavingDirectory(fd.getDirectory());
         }
+
+        else {
+            setBackground(PbmDrawerProperties.DEFAULT_MAIN_BACKGROUND_COLOR);
+        }
+
+        mainPanel.setFastSaving(fastSaving);
     }
 
-    private String generateStringToWrite() {
-        StringBuilder builder = new StringBuilder();
-        int rows = mainPanel.getDrawerRows();
-        int cols = mainPanel.getDrawerColumns();
-
-        builder.append("P1")
-                .append("\n")
-                .append(cols)
-                .append(" ")
-                .append(rows)
-                .append("\n");
-
-        boolean[][] data = mainPanel.getPaintedPoints();
-
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                builder.append(data[r][c] ? "1" : "0").append(" ");
-            }
-            builder.append("\n");
-        }
-        return builder.toString();
-     }
 
 }

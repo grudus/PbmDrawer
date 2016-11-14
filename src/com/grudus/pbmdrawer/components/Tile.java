@@ -9,11 +9,14 @@ public class Tile {
     public final double width;
     public final double height;
 
-    public Tile(double x, double y, double width, double height) {
+    private final boolean painting;
+
+    public Tile(double x, double y, double width, double height, boolean painting) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.painting = painting;
     }
 
     public int getRoundedX() {
@@ -34,6 +37,10 @@ public class Tile {
 
     public Rectangle toRectangle() {
         return new Rectangle(getRoundedX(), getRoundedY(), getRundedWidth(), getRoundedHeight());
+    }
+
+    public boolean isPainting() {
+        return painting;
     }
 
     @Override

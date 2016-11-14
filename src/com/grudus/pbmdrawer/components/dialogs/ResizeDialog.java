@@ -1,7 +1,7 @@
 package com.grudus.pbmdrawer.components.dialogs;
 
 
-import com.grudus.pbmdrawer.components.MainPanel;
+import com.grudus.pbmdrawer.PbmDrawerProperties;
 import com.grudus.pbmdrawer.components.reusable.InputField;
 
 import javax.imageio.ImageIO;
@@ -34,12 +34,7 @@ public class ResizeDialog extends JDialog {
         this.listener = listener;
 
         getRootPane ().setOpaque (false);
-        getContentPane ().setBackground (new Color(
-                MainPanel.BACKGROUND_COLOR.getRed(),
-                MainPanel.BACKGROUND_COLOR.getGreen(),
-                MainPanel.BACKGROUND_COLOR.getBlue(),
-                0x88
-        ));
+        getContentPane ().setBackground (PbmDrawerProperties.DEFAULT_MAIN_BACKGROUND_COLOR);
 
         setLocationRelativeTo(null);
 

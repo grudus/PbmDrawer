@@ -1,29 +1,35 @@
 package com.grudus.pbmdrawer.components;
 
+import com.grudus.pbmdrawer.PbmDrawerProperties;
+import com.grudus.pbmdrawer.io.PbmImageWriter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 
 
-public class Drawer extends JPanel implements MouseListener, MouseMotionListener {
+public class Drawer extends JPanel implements MouseListener, MouseMotionListener, ComponentListener {
 
-    private final JPanel mainPanel;
+    private final MainPanel mainPanel;
 
     private int columns, rows;
     private double tileWidth, tileHeight;
+    private double columnWidth, rowHeight;
     private boolean isResized;
 
+    private boolean fastSaving;
     private boolean gridIsEnabled;
 
     private boolean[][] paintedPoints;
     private Tile repaintedTile;
 
-    private final Color LINE_COLOR = new Color(0x61, 0x61, 0x61, 0x61);
-    private final Color TILE_COLOR = new Color(0x21, 0x21, 0x21);
-    private final Color BACKGROUND_COLOR = new Color(0xFA, 0xFA, 0xFA);
+    private final Color LINE_COLOR = PbmDrawerProperties.DEFAULT_GRID_COLOR;
+    private final Color TILE_COLOR = PbmDrawerProperties.DEFAULT_TILE_COLOR;
+    private final Color BACKGROUND_COLOR = PbmDrawerProperties.DEFAULT_DRAWER_BACKGROUND_COLOR;
 
 
-    public Drawer(JPanel mainPanel, int columns, int rows) {
+    public Drawer(MainPanel mainPanel, int columns, int rows) {
         this.mainPanel = mainPanel;
         this.columns = columns;
         this.rows = rows;
@@ -41,17 +47,18 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
         addMouseListener(this);
         addMouseMotionListener(this);
+        addComponentListener(this);
 
         gridIsEnabled = true;
     }
 
 
+
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        tileWidth = (double) getWidth() / columns;
-        tileHeight = (double) getHeight() / rows;
+        System.out.println("paint " + getWidth());
 
 
         if (repaintedTile != null && !isResized) {
@@ -86,11 +93,11 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     private void drawLines(Graphics g) {
         g.setColor(LINE_COLOR);
         for (int i = 0; i < columns; i++) {
-            g.drawLine((int) (tileWidth + i * tileWidth), 0, (int) (tileWidth + i * tileWidth), getHeight());
+            g.drawLine((int) (columnWidth + i * columnWidth), 0, (int) (columnWidth + i * columnWidth), getHeight());
         }
 
         for (int i = 0; i < rows; i++) {
-            g.drawLine(0, (int) (tileHeight + i * tileHeight), getWidth(), (int) (tileHeight + i * tileHeight));
+            g.drawLine(0, (int) (rowHeight + i * rowHeight), getWidth(), (int) (rowHeight + i * rowHeight));
         }
     }
 
@@ -102,15 +109,18 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         if (x < 0 || y < 0)
             return;
 
-        drawRect(x, y);
-    }
-
-    private void drawRect(int x, int y) {
         int tileX = (int) (x / tileWidth);
         int tileY = (int) (y / tileHeight);
+
+        drawRect(tileX, tileY);
+
+    }
+
+    private void drawRect(int tileX, int tileY) {
+
         if (!paintedPoints[tileY][tileX]) {
             paintedPoints[tileY][tileX] = true;
-            repaintedTile = new Tile(tileX * tileWidth, tileY * tileHeight, tileWidth, tileHeight);
+            repaintedTile = new Tile(tileX * tileWidth, tileY * tileHeight, tileWidth, tileHeight, true);
             repaint(repaintedTile.toRectangle());
         }
 
@@ -125,46 +135,13 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         repaint();
     }
 
-    @Override
-    public void mouseClicked(MouseEvent mouseEvent) {
-        drawRect(mouseEvent);
-    }
-
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent mouseEvent) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent mouseEvent) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent mouseEvent) {
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent mouseEvent) {
-        drawRect(mouseEvent);
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent mouseEvent) {
-
-    }
 
     public boolean[][] getPaintedPoints() {
         return paintedPoints;
     }
 
     public void changeGridEnabled() {
-        if (gridIsEnabled)
-            gridIsEnabled = false;
-        else
-            gridIsEnabled = true;
+        gridIsEnabled = !gridIsEnabled;
         isResized = true;
         repaint();
 
@@ -177,5 +154,67 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         repaintedTile = null;
         isResized = true;
         repaint();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        drawRect(mouseEvent);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent mouseEvent) {
+        drawRect(mouseEvent);
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+        if (fastSaving) {
+            new PbmImageWriter(mainPanel).fastSaving(new File(mainPanel.properties().getFastSavingDirectory()));
+            clearAll();
+        }
+    }
+
+    @Override
+    public void componentResized(ComponentEvent componentEvent) {
+        columnWidth = tileWidth = (double) getWidth() / columns;
+        rowHeight = tileHeight = (double) getHeight() / rows;
+        repaint();
+    }
+
+
+//    trash #########################################
+
+    @Override
+    public void componentMoved(ComponentEvent componentEvent) {
+    }
+
+    @Override
+    public void componentShown(ComponentEvent componentEvent) {
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent componentEvent) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+    }
+
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent mouseEvent) {
+
+    }
+
+    public void setFastSaving(boolean fastSaving) {
+        this.fastSaving = fastSaving;
     }
 }

@@ -1,6 +1,8 @@
 package com.grudus.pbmdrawer.components.reusable;
 
 
+import com.grudus.pbmdrawer.PbmDrawerProperties;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
@@ -18,9 +20,9 @@ public class InputField extends JTextField implements FocusListener {
     private boolean error;
     private int maxLength;
 
-    private Color hintColor = new Color(0x9E, 0x9E, 0x9E);
-    private Color textColor = new Color(0x21, 0x21, 0x21);
-    private Color errorBorderColor = new Color(0xd5, 0x00, 0x00);
+    private Color hintColor = PbmDrawerProperties.DEFAULT_HINT_COLOR;
+    private Color textColor = PbmDrawerProperties.DEFAULT_TEXT_COLOR;
+    private Color errorBorderColor = PbmDrawerProperties.DEFAULT_ERROR_BORDER_COLOR;
 
     private Border normalBorder;
 
@@ -56,7 +58,7 @@ public class InputField extends JTextField implements FocusListener {
                     return;
                 }
 
-                if (inputType == InputType.NUMBERS && !Character.isDigit(key)) {
+                if (InputField.this.inputType == InputType.NUMBERS && !Character.isDigit(key)) {
                     showError(true);
                     keyEvent.consume();
                     error = true;

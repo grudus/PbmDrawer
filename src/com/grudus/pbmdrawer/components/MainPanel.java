@@ -1,5 +1,7 @@
 package com.grudus.pbmdrawer.components;
 
+import com.grudus.pbmdrawer.PbmDrawerProperties;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,10 +14,12 @@ public class MainPanel extends JPanel {
     private int drawerColumns;
     private int drawerRows;
 
-    public static final Color BACKGROUND_COLOR = new Color(0xB0, 0xBE, 0xC5);
+    private final PbmDrawerProperties properties;
 
     public MainPanel() {
-        setBackground(BACKGROUND_COLOR);
+        properties = new PbmDrawerProperties();
+        setBackground(PbmDrawerProperties.DEFAULT_MAIN_BACKGROUND_COLOR);
+
 
         drawerColumns = drawerRows = 28;
 
@@ -52,5 +56,13 @@ public class MainPanel extends JPanel {
         this.drawerRows = rows;
         this.drawerColumns = columns;
         drawer.changeGrid(rows, columns);
+    }
+
+    public void setFastSaving(boolean fastSaving) {
+        drawer.setFastSaving(fastSaving);
+    }
+
+    public PbmDrawerProperties properties() {
+        return properties;
     }
 }
