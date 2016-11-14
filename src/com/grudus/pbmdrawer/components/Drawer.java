@@ -16,7 +16,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     private int columns, rows;
     private double tileWidth, tileHeight;
     private double columnWidth, rowHeight;
-    private boolean isResized;
+    private boolean refresh;
 
     private boolean fastSaving;
     private boolean gridIsEnabled;
@@ -41,7 +41,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
             @Override
             public void componentResized(ComponentEvent componentEvent) {
                 super.componentResized(componentEvent);
-                isResized = true;
+                refresh = true;
             }
         });
 
@@ -61,14 +61,14 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         System.out.println("paint " + getWidth());
 
 
-        if (repaintedTile != null && !isResized) {
+        if (repaintedTile != null && !refresh) {
             g.setColor(TILE_COLOR);
             g.fillRect(repaintedTile.getRoundedX(), repaintedTile.getRoundedY(), repaintedTile.getRundedWidth(), repaintedTile.getRoundedHeight());
         }
 
-        if (isResized) {
+        if (refresh) {
             handleResized(g);
-            isResized = false;
+            refresh = false;
         }
     }
 
@@ -113,7 +113,6 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         int tileY = (int) (y / tileHeight);
 
         drawRect(tileX, tileY);
-
     }
 
     private void drawRect(int tileX, int tileY) {
@@ -131,10 +130,15 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
             for (int j = 0; j < columns; j++)
                 paintedPoints[i][j] = false;
         }
-        isResized = true;
+        refresh = true;
         repaint();
     }
 
+    private void resize() {
+        columnWidth = tileWidth = (double) getWidth() / columns;
+        rowHeight = tileHeight = (double) getHeight() / rows;
+        repaint();
+    }
 
     public boolean[][] getPaintedPoints() {
         return paintedPoints;
@@ -142,7 +146,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
     public void changeGridEnabled() {
         gridIsEnabled = !gridIsEnabled;
-        isResized = true;
+        refresh = true;
         repaint();
 
     }
@@ -152,8 +156,8 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         this.columns = columns;
         this.paintedPoints = new boolean[rows][columns];
         repaintedTile = null;
-        isResized = true;
-        repaint();
+        refresh = true;
+        resize();
     }
 
     @Override
@@ -176,9 +180,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
     @Override
     public void componentResized(ComponentEvent componentEvent) {
-        columnWidth = tileWidth = (double) getWidth() / columns;
-        rowHeight = tileHeight = (double) getHeight() / rows;
-        repaint();
+        resize();
     }
 
 

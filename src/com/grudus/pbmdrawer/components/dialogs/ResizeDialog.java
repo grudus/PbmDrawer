@@ -24,11 +24,8 @@ public class ResizeDialog extends JDialog {
 
     private OnOkListener listener;
 
-    public static final int MAX_GRID = 1024;
-
 
     public ResizeDialog(OnOkListener listener) {
-        this.setTitle("No siema");
         this.setSize(240, 140);
         this.setFocusable(true);
         this.listener = listener;
