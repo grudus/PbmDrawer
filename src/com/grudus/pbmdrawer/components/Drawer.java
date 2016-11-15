@@ -108,7 +108,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         int x = mouseEvent.getX();
         int y = mouseEvent.getY();
 
-        if (x < 0 || y < 0)
+        if (x < 0 || y < 0 || x > getWidth()-1 || y > getHeight()-1)
             return;
 
         int tileX = (int) (x / tileWidth);

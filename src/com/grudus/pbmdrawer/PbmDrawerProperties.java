@@ -19,7 +19,7 @@ public class PbmDrawerProperties {
     private Color hintColor;
     private Color textColor;
     private Color errorBorderColor;
-
+    private Color clickedButtonColor;
 
     private String iconFormat;
     private String iconPath;
@@ -67,6 +67,7 @@ public class PbmDrawerProperties {
         hintColor = Color.decode(properties.getProperty("hint_color"));
         textColor = Color.decode(properties.getProperty("text_color"));
         errorBorderColor = Color.decode(properties.getProperty("error_border_color"));
+        clickedButtonColor = Color.decode(properties.getProperty("clicked_button_color"));
 
         iconFormat = properties.getProperty("icon_format");
         iconPath = properties.getProperty("icons_path");
@@ -279,5 +280,14 @@ public class PbmDrawerProperties {
         this.windowSize = windowSize;
         saveProperty("window_width", windowSize.getWidth() + "");
         saveProperty("window_height", windowSize.getHeight() + "");
+    }
+
+    public Color getClickedButtonColor() {
+        return clickedButtonColor;
+    }
+
+    public void setClickedButtonColor(Color clickedButtonColor) {
+        this.clickedButtonColor = clickedButtonColor;
+        saveProperty("clicked_button_color", ColorHelper.stringColor(clickedButtonColor));
     }
 }
