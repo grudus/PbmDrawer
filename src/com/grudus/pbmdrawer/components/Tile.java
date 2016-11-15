@@ -4,14 +4,14 @@ package com.grudus.pbmdrawer.components;
 import java.awt.*;
 
 public class Tile {
-    public final double x;
-    public final double y;
-    public final double width;
-    public final double height;
+    public final int x;
+    public final int y;
+    public final int width;
+    public final int height;
 
     private final boolean painting;
 
-    public Tile(double x, double y, double width, double height, boolean painting) {
+    public Tile(int x, int y, int width, int height, boolean painting) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -19,24 +19,24 @@ public class Tile {
         this.painting = painting;
     }
 
-    public int getRoundedX() {
-        return (int) (0.5 + x);
+    public int getSmallerX() {
+        return x + 1;
     }
 
-    public int getRoundedY() {
-        return (int) (0.5 + y);
+    public int getSmallerY() {
+        return y + 1;
     }
 
-    public int getRundedWidth() {
-        return (int) (0.5 + width);
+    public int getSmallerWidth() {
+        return width - 1;
     }
 
-    public int getRoundedHeight() {
-        return (int) (0.5 + height);
+    public int getSmallerHeight() {
+        return height - 1;
     }
 
     public Rectangle toRectangle() {
-        return new Rectangle(getRoundedX(), getRoundedY(), getRundedWidth(), getRoundedHeight());
+        return new Rectangle(getSmallerX(), getSmallerY(), getSmallerWidth(), getSmallerHeight());
     }
 
     public boolean isPainting() {

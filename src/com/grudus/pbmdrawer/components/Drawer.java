@@ -13,8 +13,8 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     private final MainPanel mainPanel;
 
     private int columns, rows;
-    private double tileWidth, tileHeight;
-    private double columnWidth, rowHeight;
+    private int tileWidth, tileHeight;
+    private int columnWidth, rowHeight;
     private boolean refresh;
 
     private boolean fastSaving;
@@ -65,7 +65,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
         if (repaintedTile != null && !refresh) {
             g.setColor(repaintedTile.isPainting() ? tileColor : backgroundColor);
-            g.fillRect(repaintedTile.getRoundedX(), repaintedTile.getRoundedY(), repaintedTile.getRundedWidth(), repaintedTile.getRoundedHeight());
+            g.fillRect(repaintedTile.x+1, repaintedTile.y+1, repaintedTile.width-1, repaintedTile.height-1);
         }
 
         if (refresh) {
@@ -86,7 +86,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < columns; c++) {
                 if (paintedPoints[r][c]) {
-                    g.fillRect((int) (c * tileWidth+0.5), (int) (r * tileHeight+0.5), (int)(tileWidth+0.5), (int)(tileHeight+0.5));
+                    g.fillRect(c * tileWidth+1, r * tileHeight+1, tileWidth-1, tileHeight-1);
                 }
             }
         }
@@ -95,11 +95,11 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     private void drawLines(Graphics g) {
         g.setColor(lineColor);
         for (int i = 0; i < columns; i++) {
-            g.drawLine((int) (columnWidth + i * columnWidth), 0, (int) (columnWidth + i * columnWidth), getHeight());
+            g.drawLine(columnWidth + i * columnWidth, 0, columnWidth + i * columnWidth, getHeight());
         }
 
         for (int i = 0; i < rows; i++) {
-            g.drawLine(0, (int) (rowHeight + i * rowHeight), getWidth(), (int) (rowHeight + i * rowHeight));
+            g.drawLine(0, rowHeight + i * rowHeight, getWidth(), rowHeight + i * rowHeight);
         }
     }
 
@@ -111,8 +111,8 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         if (x < 0 || y < 0 || x > getWidth()-1 || y > getHeight()-1)
             return;
 
-        int tileX = (int) (x / tileWidth);
-        int tileY = (int) (y / tileHeight);
+        int tileX = x / tileWidth;
+        int tileY = y / tileHeight;
 
         drawRect(tileX, tileY, cleanRect);
     }
@@ -137,8 +137,8 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     }
 
     private void resize() {
-        columnWidth = tileWidth = (double) getWidth() / columns;
-        rowHeight = tileHeight = (double) getHeight() / rows;
+        columnWidth = tileWidth = getWidth() / columns;
+        rowHeight = tileHeight =  getHeight() / rows;
         repaint();
     }
 
