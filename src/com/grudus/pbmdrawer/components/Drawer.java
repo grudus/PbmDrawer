@@ -64,7 +64,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
 
         if (repaintedTile != null && !refresh) {
-            g.setColor(tileColor);
+            g.setColor(repaintedTile.isPainting() ? tileColor : backgroundColor);
             g.fillRect(repaintedTile.getRoundedX(), repaintedTile.getRoundedY(), repaintedTile.getRundedWidth(), repaintedTile.getRoundedHeight());
         }
 
@@ -104,7 +104,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     }
 
 
-    private void drawRect(MouseEvent mouseEvent) {
+    private void drawRect(MouseEvent mouseEvent, boolean cleanRect) {
         int x = mouseEvent.getX();
         int y = mouseEvent.getY();
 
@@ -114,14 +114,14 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         int tileX = (int) (x / tileWidth);
         int tileY = (int) (y / tileHeight);
 
-        drawRect(tileX, tileY);
+        drawRect(tileX, tileY, cleanRect);
     }
 
-    private void drawRect(int tileX, int tileY) {
+    private void drawRect(int tileX, int tileY, boolean cleanRect) {
 
-        if (!paintedPoints[tileY][tileX]) {
-            paintedPoints[tileY][tileX] = true;
-            repaintedTile = new Tile(tileX * tileWidth, tileY * tileHeight, tileWidth, tileHeight, true);
+        if (paintedPoints[tileY][tileX] == cleanRect) {
+            paintedPoints[tileY][tileX] = !cleanRect;
+            repaintedTile = new Tile(tileX * tileWidth, tileY * tileHeight, tileWidth, tileHeight, !cleanRect);
             repaint(repaintedTile.toRectangle());
         }
 
@@ -164,12 +164,13 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
-        drawRect(mouseEvent);
+        //when user press right button on mouse metaDown is true
+        drawRect(mouseEvent, mouseEvent.isMetaDown());
     }
 
     @Override
     public void mouseDragged(MouseEvent mouseEvent) {
-        drawRect(mouseEvent);
+        drawRect(mouseEvent, mouseEvent.isMetaDown());
     }
 
     @Override
