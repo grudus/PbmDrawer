@@ -2,6 +2,8 @@ package com.grudus.pbmdrawer.components;
 
 import com.grudus.pbmdrawer.components.dialogs.ResizeDialog;
 import com.grudus.pbmdrawer.components.reusable.IconWrapper;
+import com.grudus.pbmdrawer.io.FileChooserHelper;
+import com.grudus.pbmdrawer.io.PbmImageReader;
 import com.grudus.pbmdrawer.io.PbmImageWriter;
 
 import javax.imageio.ImageIO;
@@ -21,7 +23,7 @@ public class BottomSettings extends JPanel {
 
     private String iconsPath;
     private String iconsFormat;
-    private static final String[] BUTTON_IMAGES = {"clear_all", "save", "grid", "resize", "fast_save"};
+    private static final String[] BUTTON_IMAGES = {"clear_all", "grid", "resize", "save", "load", "fast_save"};
     private static final IconWrapper[] BUTTONS = new IconWrapper[BUTTON_IMAGES.length];
 
     private Color normalBackgroudnd;
@@ -56,7 +58,7 @@ public class BottomSettings extends JPanel {
         gbc.gridy = 0;
 
         for (int i = 0; i < BUTTONS.length; i++) {
-            BUTTONS[i] = new IconWrapper(new JLabel());
+            BUTTONS[i] = new IconWrapper(new JLabel(), BUTTON_IMAGES[i]);
             BUTTONS[i].setBackground(normalBackgroudnd);
             gbc.gridx = i;
             add(BUTTONS[i], gbc);
@@ -95,21 +97,40 @@ public class BottomSettings extends JPanel {
 
                 button.setBackground(clickedBackground);
 
-                if (button == BUTTONS[0]) {
+                String desc = button.description;
+
+                if (desc.equals("clear_all")) {
                     mainPanel.clearAll();
                 }
-                else if (button == BUTTONS[1]) {
-                    new PbmImageWriter(mainPanel).chooseFileAndSaveImage();
+                else if (desc.equals("save")) {
+                    File file = FileChooserHelper.selectFile(mainPanel.properties().getSaveDirectory(), FileChooserHelper.Option.SAVE);
                     button.setBackground(normalBackgroudnd);
+
+                    if (file != null) {
+                        new PbmImageWriter(mainPanel).saveImage(file);
+                        mainPanel.properties().setSaveDirectory(file.getParent());
+                    }
                 }
-                else if (button == BUTTONS[2]) {
+                else if (desc.equals("grid")) {
                     mainPanel.changeGridEnable();
                 }
-                else if (button == BUTTONS[3]) {
+                else if (desc.equals("resize")) {
                     new ResizeDialog(mainPanel.properties(), (mainPanel::changeGrid)).setVisible(true);
                 }
-                else if (button == BUTTONS[4]) {
-                    enableFastSaving(!fastSaving);
+                else if (desc.equals("fast_save")) {
+                    enableFastSaving(button, !fastSaving);
+                }
+                else if (desc.equals("load")) {
+                    File file = FileChooserHelper.selectFile(mainPanel.properties().getSaveDirectory(), FileChooserHelper.Option.LOAD);
+                    button.setBackground(normalBackgroudnd);
+                    if (file == null) return;
+
+                    try {
+                        boolean[][] image = new PbmImageReader(mainPanel).loadImage(file);
+                        mainPanel.addDrawerImage(image);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
 
@@ -127,27 +148,25 @@ public class BottomSettings extends JPanel {
 
     }
 
-    private void enableFastSaving(boolean b) {
+
+    private void enableFastSaving(IconWrapper wrapper, boolean b) {
         fastSaving = b;
 
         if (fastSaving) {
-            BUTTONS[4].setBackground(clickedBackground);
+            wrapper.setBackground(clickedBackground);
 
-            FileDialog fd = new FileDialog(new Frame(), "Choose a file", FileDialog.SAVE);
-            fd.setDirectory(mainPanel.properties().getFastSavingDirectory());
-            fd.setVisible(true);
-            String filename = fd.getFile();
+            File file = FileChooserHelper.selectFile(mainPanel.properties().getFastSavingDirectory(), FileChooserHelper.Option.SAVE);
 
-            if (filename != null)
-                mainPanel.properties().setFastSavingDirectory(fd.getDirectory());
+            if (file != null)
+                mainPanel.properties().setFastSavingDirectory(file.getParent());
             else {
-                BUTTONS[4].setBackground(normalBackgroudnd);
+                wrapper.setBackground(normalBackgroudnd);
                 fastSaving = false;
             }
         }
 
         else {
-            BUTTONS[4].setBackground(normalBackgroudnd);
+            wrapper.setBackground(normalBackgroudnd);
         }
 
         mainPanel.setFastSaving(fastSaving);

@@ -20,6 +20,8 @@ public class MainPanel extends JPanel {
     private final PbmDrawerProperties properties;
     private BottomSettings settings;
 
+    JPanel drawerWrapper;
+
     public MainPanel() {
         properties = new PbmDrawerProperties();
         setBackground(properties.getMainBackgroundColor());
@@ -36,7 +38,11 @@ public class MainPanel extends JPanel {
 
         drawer = new Drawer(this, drawerColumns, drawerRows);
 
-        add(drawer, BorderLayout.CENTER);
+        drawerWrapper = new JPanel();
+        drawerWrapper.setLayout(new BorderLayout());
+        drawerWrapper.setBackground(properties.getDrawerWrapperBackground());
+        drawerWrapper.add(drawer, BorderLayout.CENTER);
+        add(drawerWrapper, BorderLayout.CENTER);
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -59,7 +65,7 @@ public class MainPanel extends JPanel {
 
         drawer.setSize(new Dimension(tileWidth * drawerColumns, tileHeight * drawerRows));
 
-        setBorder(new EmptyBorder(verticalGap_2, horizontalGap_2, verticalGap_2, horizontalGap_2));
+        drawerWrapper.setBorder(new EmptyBorder(verticalGap_2, horizontalGap_2, verticalGap_2, horizontalGap_2));
     }
 
     public void clearAll() {
@@ -97,5 +103,10 @@ public class MainPanel extends JPanel {
 
     public PbmDrawerProperties properties() {
         return properties;
+    }
+
+    public void addDrawerImage(boolean[][] image) {
+        changeGrid(image.length, image[0].length);
+        drawer.addImage(image);
     }
 }

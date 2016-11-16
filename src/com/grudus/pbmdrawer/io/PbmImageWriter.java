@@ -3,7 +3,6 @@ package com.grudus.pbmdrawer.io;
 
 import com.grudus.pbmdrawer.components.MainPanel;
 
-import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -15,20 +14,6 @@ public class PbmImageWriter {
 
     public PbmImageWriter(MainPanel panel) {
         this.panel = panel;
-    }
-
-    public void chooseFileAndSaveImage() {
-        FileDialog fd = new FileDialog(new Frame(), panel.properties().getFileDialogTitle(), FileDialog.SAVE);
-
-        fd.setDirectory(panel.properties().getSaveDirectory());
-        fd.setVisible(true);
-        String filename = fd.getFile();
-
-
-        if (filename != null) {
-            saveImage(new File(fd.getDirectory(), filename));
-            panel.properties().setSaveDirectory(fd.getDirectory());
-        }
     }
 
     public void saveImage(File file) {

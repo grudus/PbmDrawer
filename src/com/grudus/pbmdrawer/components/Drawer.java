@@ -222,4 +222,10 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     public void setFastSaving(boolean fastSaving) {
         this.fastSaving = fastSaving;
     }
+
+    public void addImage(boolean[][] image) {
+        this.paintedPoints = image;
+        refresh = true;
+        repaint();
+    }
 }

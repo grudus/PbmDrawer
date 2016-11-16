@@ -20,6 +20,7 @@ public class PbmDrawerProperties {
     private Color textColor;
     private Color errorBorderColor;
     private Color clickedButtonColor;
+    private Color drawerWrapperBackground;
 
     private String iconFormat;
     private String iconPath;
@@ -87,6 +88,7 @@ public class PbmDrawerProperties {
 
         fileDialogTitle = properties.getProperty("file_dialog_title");
         fastSavingFileName = properties.getProperty("fast_saving_filename");
+        drawerWrapperBackground = Color.decode(properties.getProperty("drawer_wrapper_background"));
 
     }
 
@@ -289,5 +291,14 @@ public class PbmDrawerProperties {
     public void setClickedButtonColor(Color clickedButtonColor) {
         this.clickedButtonColor = clickedButtonColor;
         saveProperty("clicked_button_color", ColorHelper.stringColor(clickedButtonColor));
+    }
+
+    public Color getDrawerWrapperBackground() {
+        return drawerWrapperBackground;
+    }
+
+    public void setDrawerWrapperBackground(Color drawerWrapperBackground) {
+        this.drawerWrapperBackground = drawerWrapperBackground;
+        saveProperty("drawer_wrapper_background", ColorHelper.stringColor(drawerWrapperBackground));
     }
 }

@@ -7,9 +7,11 @@ import java.awt.*;
 public class IconWrapper extends JPanel {
 
     public final JLabel label;
+    public final String description;
 
-    public IconWrapper(JLabel label) {
+    public IconWrapper(JLabel label, String description) {
         this.label = label;
+        this.description = description;
 
         setLayout(new GridBagLayout());
 
