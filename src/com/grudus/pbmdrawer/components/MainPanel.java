@@ -3,6 +3,7 @@ package com.grudus.pbmdrawer.components;
 import com.grudus.pbmdrawer.PbmDrawerProperties;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -17,6 +18,7 @@ public class MainPanel extends JPanel {
     private int drawerRows;
 
     private final PbmDrawerProperties properties;
+    private BottomSettings settings;
 
     public MainPanel() {
         properties = new PbmDrawerProperties();
@@ -29,7 +31,8 @@ public class MainPanel extends JPanel {
         MAIN_LAYOUT = new BorderLayout();
         setLayout(MAIN_LAYOUT);
 
-        add(new BottomSettings(this), BorderLayout.PAGE_END);
+        settings = new BottomSettings(this);
+        add(settings, BorderLayout.PAGE_END);
 
         drawer = new Drawer(this, drawerColumns, drawerRows);
 
@@ -39,20 +42,24 @@ public class MainPanel extends JPanel {
             @Override
             public void componentResized(ComponentEvent componentEvent) {
                 super.componentResized(componentEvent);
-
-                int initDrawerWidth = drawer.getWidth();
-                int initDrawertHeight = drawer.getHeight();
-
-                int tileWidth = initDrawerWidth / drawerColumns;
-                int tileHeight = initDrawertHeight / drawerRows;
-
-                int horizontalGap_2 = (initDrawerWidth - tileWidth * drawerColumns) / 2;
-                int verticalGap_2 =( initDrawertHeight - tileHeight * drawerRows) / 2;
-
-                drawer.setSize(new Dimension(tileWidth * drawerColumns, tileHeight * drawerRows));
-
+                resizeDrawer();
             }
         });
+    }
+
+    private void resizeDrawer() {
+        int initDrawerWidth = getWidth();
+        int initDrawertHeight = getHeight() - settings.getHeight();
+
+        int tileWidth = initDrawerWidth / drawerColumns;
+        int tileHeight = initDrawertHeight / drawerRows;
+
+        int horizontalGap_2 = (initDrawerWidth - tileWidth * drawerColumns) / 2;
+        int verticalGap_2 =( initDrawertHeight - tileHeight * drawerRows) / 2;
+
+        drawer.setSize(new Dimension(tileWidth * drawerColumns, tileHeight * drawerRows));
+
+        setBorder(new EmptyBorder(verticalGap_2, horizontalGap_2, verticalGap_2, horizontalGap_2));
     }
 
     public void clearAll() {
@@ -79,6 +86,7 @@ public class MainPanel extends JPanel {
         this.drawerRows = rows;
         this.drawerColumns = columns;
         drawer.changeGrid(rows, columns);
+        resizeDrawer();
         properties.setGridRows(rows);
         properties.setGridColumns(columns);
     }
