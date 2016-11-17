@@ -6,6 +6,7 @@ import com.grudus.pbmdrawer.io.PbmImageWriter;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 
@@ -24,6 +25,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     private PbmImage image;
 
     private Tile repaintedTile;
+    private Tile cursorTile;
 
     private Color lineColor;
     private Color tileColor;
@@ -55,6 +57,18 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         addComponentListener(this);
 
         gridIsEnabled = true;
+
+        cursorTile = new Tile(0, 0, tileWidth, tileHeight, true);
+
+//        hideCursor();
+    }
+
+    public void hideCursor() {
+        BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                cursorImg, new Point(0, 0), "blank cursor");
+        this.setCursor(blankCursor);
+
     }
 
 
@@ -64,16 +78,26 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        drawCursor(g);
 
         if (repaintedTile != null && !refresh) {
             g.setColor(repaintedTile.isPainting() ? tileColor : backgroundColor);
-            g.fillRect(repaintedTile.x+1, repaintedTile.y+1, repaintedTile.width-1, repaintedTile.height-1);
+            repaintedTile.drawTile(g);
         }
 
         if (refresh) {
             handleRefresh(g);
             refresh = false;
         }
+
+    }
+
+    private void drawCursor(Graphics g) {
+        if (!cursorTile.isEnabled()) {
+            return;
+        }
+        g.setColor(Color.RED);
+        cursorTile.drawTile(g);
     }
 
     private void handleRefresh(Graphics g) {
@@ -88,7 +112,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < columns; c++) {
                 if (image.getImage()[r][c]) {
-                    g.fillRect(c * tileWidth+1, r * tileHeight+1, tileWidth-1, tileHeight-1);
+                    g.fillRect(c * columnWidth+1, r * rowHeight+1, columnWidth-1, rowHeight-1);
                 }
             }
         }
@@ -106,17 +130,24 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     }
 
 
-    private void drawRect(MouseEvent mouseEvent, boolean cleanRect) {
-        int x = mouseEvent.getX();
-        int y = mouseEvent.getY();
+    private void drawRect(boolean cleanRect) {
+        int x = cursorTile.x;
+        int y = cursorTile.y;
 
         if (x < 0 || y < 0 || x > getWidth()-1 || y > getHeight()-1)
             return;
 
-        int tileX = x / tileWidth;
-        int tileY = y / tileHeight;
+        int scaleX = tileWidth / columnWidth;
+        int scaleY = tileHeight / rowHeight;
 
-        drawRect(tileX, tileY, cleanRect);
+        for (int c = 0; c < scaleX; c++) {
+            for (int r = 0; r < scaleY; r++) {
+                int tileX = x / columnWidth + c;
+                int tileY = y / rowHeight + r;
+
+                drawRect(tileX, tileY, cleanRect);
+            }
+        }
     }
 
     private void drawRect(int tileX, int tileY, boolean cleanRect) {
@@ -139,9 +170,13 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     }
 
     private void resize() {
-        columnWidth = tileWidth = getWidth() / columns;
-        rowHeight = tileHeight =  getHeight() / rows;
+        columnWidth = getWidth() / columns;
+        rowHeight =  getHeight() / rows;
+        tileWidth = columnWidth * 2;
+        tileHeight = rowHeight * 3;
+        cursorTile.setSize(tileWidth, tileHeight);
         repaint();
+
     }
 
     public PbmImage getImage() {
@@ -167,16 +202,27 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
         //when user press right button on mouse metaDown is true
-        drawRect(mouseEvent, mouseEvent.isMetaDown());
+        drawRect(mouseEvent.isMetaDown());
+
     }
 
     @Override
     public void mouseDragged(MouseEvent mouseEvent) {
-        drawRect(mouseEvent, mouseEvent.isMetaDown());
+        if (cursorTile.isEnabled()) {
+            cursorTile.disable();
+            refresh = true;
+            repaint();
+        }
+        findCursorPosition(mouseEvent);
+        drawRect(mouseEvent.isMetaDown());
+
+        refresh = true;
+        repaint();
     }
 
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
+        cursorTile.enable();
         if (fastSaving) {
             new PbmImageWriter(mainPanel).fastSaving(new File(mainPanel.properties().getFastSavingDirectory()));
             clearAll();
@@ -193,6 +239,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
     @Override
     public void componentMoved(ComponentEvent componentEvent) {
+
     }
 
     @Override
@@ -218,7 +265,21 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
     @Override
     public void mouseMoved(MouseEvent mouseEvent) {
+       findCursorPosition(mouseEvent);
+        refresh = true;
+        repaint();
+    }
 
+    private void findCursorPosition(MouseEvent mouseEvent) {
+        int x = mouseEvent.getX();
+        int y = mouseEvent.getY();
+
+        int tileX = x / columnWidth;
+        int tileY = y / rowHeight;
+
+        int middleX = columnWidth * tileX;
+        int middleY = rowHeight * tileY;
+        cursorTile.setPosition(middleX, middleY);
     }
 
     public void setFastSaving(boolean fastSaving) {

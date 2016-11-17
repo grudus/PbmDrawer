@@ -4,10 +4,12 @@ package com.grudus.pbmdrawer.components;
 import java.awt.*;
 
 public class Tile {
-    public final int x;
-    public final int y;
-    public final int width;
-    public final int height;
+    public int x;
+    public int y;
+    public int width;
+    public int height;
+
+    private boolean enabled;
 
     private final boolean painting;
 
@@ -17,6 +19,7 @@ public class Tile {
         this.width = width;
         this.height = height;
         this.painting = painting;
+        this.enabled = true;
     }
 
     public int getSmallerX() {
@@ -43,6 +46,11 @@ public class Tile {
         return painting;
     }
 
+    public void drawTile(Graphics g) {
+        if (enabled)
+            g.fillRect(getSmallerX(), getSmallerY(), getSmallerWidth(), getSmallerHeight());
+    }
+
     @Override
     public String toString() {
         return "Tile{" +
@@ -51,5 +59,27 @@ public class Tile {
                 ", width=" + width +
                 ", height=" + height +
                 '}';
+    }
+
+    public void setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void setSize(int tileWidth, int tileHeight) {
+        this.width = tileWidth;
+        this.height = tileHeight;
+    }
+
+    public void enable() {
+        this.enabled = true;
+    }
+
+    public void disable() {
+        this.enabled = false;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 }
