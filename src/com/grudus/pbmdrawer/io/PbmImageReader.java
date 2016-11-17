@@ -1,7 +1,6 @@
 package com.grudus.pbmdrawer.io;
 
 
-import com.grudus.pbmdrawer.components.MainPanel;
 import com.grudus.pbmdrawer.exceptions.PbmImageException;
 
 import java.io.*;
@@ -9,15 +8,13 @@ import java.util.Arrays;
 
 public class PbmImageReader {
 
-    private final MainPanel context;
 
     private int width;
     private int height;
     private int imageLineCounter;
     private boolean[][] image;
 
-    public PbmImageReader(MainPanel context) {
-        this.context = context;
+    public PbmImageReader() {
         width = height = -1;
         imageLineCounter = -2;
     }

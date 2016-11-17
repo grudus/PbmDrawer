@@ -20,10 +20,10 @@ public class MainPanel extends JPanel {
     private final PbmDrawerProperties properties;
     private BottomSettings settings;
 
-    JPanel drawerWrapper;
+    private JPanel drawerWrapper;
 
-    public MainPanel() {
-        properties = new PbmDrawerProperties();
+    public MainPanel(PbmDrawerProperties properties) {
+        this.properties = properties;
         setBackground(properties.getMainBackgroundColor());
 
 

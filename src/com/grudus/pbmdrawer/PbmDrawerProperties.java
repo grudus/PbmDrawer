@@ -38,23 +38,26 @@ public class PbmDrawerProperties {
 
     private String fileDialogTitle;
     private String fastSavingFileName;
+    private String applicationName;
+
+    private String fastSavingInfo;
 
 
     private final File propertiesFile;
 
-    public PbmDrawerProperties()  {
+    public PbmDrawerProperties(String propertiesPath) throws IOException {
         properties = new Properties();
 
-        propertiesFile = new File("res/properties/application.properties");
+        propertiesFile = new File(propertiesPath);
 
         if (!propertiesFile.exists()) {
-            System.err.println("file " + propertiesFile + " doesn't exist!");
+            throw new IOException("file " + propertiesFile + " doesn't exist!");
         }
 
         try (BufferedInputStream stream = new BufferedInputStream(new FileInputStream(propertiesFile))) {
             properties.load(stream);
         } catch (IOException e) {
-            System.err.println("Cannot find load data from file " + propertiesFile);
+            throw new IOException("Cannot find load data from file " + propertiesFile);
         }
 
         loadProperties();
@@ -89,6 +92,8 @@ public class PbmDrawerProperties {
         fileDialogTitle = properties.getProperty("file_dialog_title");
         fastSavingFileName = properties.getProperty("fast_saving_filename");
         drawerWrapperBackground = Color.decode(properties.getProperty("drawer_wrapper_background"));
+        applicationName = properties.getProperty("application_name");
+        fastSavingInfo = properties.getProperty("fast_saving_info");
 
     }
 
@@ -300,5 +305,23 @@ public class PbmDrawerProperties {
     public void setDrawerWrapperBackground(Color drawerWrapperBackground) {
         this.drawerWrapperBackground = drawerWrapperBackground;
         saveProperty("drawer_wrapper_background", ColorHelper.stringColor(drawerWrapperBackground));
+    }
+
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+        saveProperty("application_name", applicationName);
+    }
+
+    public String getFastSavingInfo() {
+        return fastSavingInfo;
+    }
+
+    public void setFastSavingInfo(String fastSavingInfo) {
+        this.fastSavingInfo = fastSavingInfo;
+        saveProperty("fast_saving_info", fastSavingInfo);
     }
 }

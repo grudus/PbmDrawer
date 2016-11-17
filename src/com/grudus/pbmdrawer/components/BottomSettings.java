@@ -26,7 +26,7 @@ public class BottomSettings extends JPanel {
     private static final String[] BUTTON_IMAGES = {"clear_all", "grid", "resize", "save", "load", "fast_save"};
     private static final IconWrapper[] BUTTONS = new IconWrapper[BUTTON_IMAGES.length];
 
-    private Color normalBackgroudnd;
+    private Color normalBackground;
     private Color clickedBackground;
 
     private int height;
@@ -35,7 +35,7 @@ public class BottomSettings extends JPanel {
     public BottomSettings(MainPanel mainPanel) {
         this.mainPanel = mainPanel;
 
-        normalBackgroudnd  = mainPanel.properties().getMainBackgroundColor();
+        normalBackground = mainPanel.properties().getMainBackgroundColor();
         clickedBackground = mainPanel.properties().getClickedButtonColor();
 
         iconsPath = mainPanel.properties().getIconPath();
@@ -45,7 +45,7 @@ public class BottomSettings extends JPanel {
 
         setLayout(new GridBagLayout());
 
-        setBackground(normalBackgroudnd);
+        setBackground(normalBackground);
 
         addButtons();
         addListeners();
@@ -59,7 +59,8 @@ public class BottomSettings extends JPanel {
 
         for (int i = 0; i < BUTTONS.length; i++) {
             BUTTONS[i] = new IconWrapper(new JLabel(), BUTTON_IMAGES[i]);
-            BUTTONS[i].setBackground(normalBackgroudnd);
+            BUTTONS[i].setToolTipText(BUTTON_IMAGES[i]);
+            BUTTONS[i].setBackground(normalBackground);
             gbc.gridx = i;
             add(BUTTONS[i], gbc);
         }
@@ -104,7 +105,7 @@ public class BottomSettings extends JPanel {
                 }
                 else if (desc.equals("save")) {
                     File file = FileChooserHelper.selectFile(mainPanel.properties().getSaveDirectory(), FileChooserHelper.Option.SAVE);
-                    button.setBackground(normalBackgroudnd);
+                    button.setBackground(normalBackground);
 
                     if (file != null) {
                         new PbmImageWriter(mainPanel).saveImage(file);
@@ -122,11 +123,11 @@ public class BottomSettings extends JPanel {
                 }
                 else if (desc.equals("load")) {
                     File file = FileChooserHelper.selectFile(mainPanel.properties().getSaveDirectory(), FileChooserHelper.Option.LOAD);
-                    button.setBackground(normalBackgroudnd);
+                    button.setBackground(normalBackground);
                     if (file == null) return;
 
                     try {
-                        boolean[][] image = new PbmImageReader(mainPanel).loadImage(file);
+                        boolean[][] image = new PbmImageReader().loadImage(file);
                         mainPanel.addDrawerImage(image);
                     } catch (IOException e) {
                         JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -140,7 +141,7 @@ public class BottomSettings extends JPanel {
 
                 IconWrapper button = (IconWrapper) mouseEvent.getSource();
 
-                button.setBackground(normalBackgroudnd);
+                button.setBackground(normalBackground);
             }
         };
 
@@ -153,6 +154,7 @@ public class BottomSettings extends JPanel {
         fastSaving = b;
 
         if (fastSaving) {
+            JOptionPane.showMessageDialog(null, mainPanel.properties().getFastSavingInfo());
             wrapper.setBackground(clickedBackground);
 
             File file = FileChooserHelper.selectFile(mainPanel.properties().getFastSavingDirectory(), FileChooserHelper.Option.SAVE);
@@ -160,13 +162,13 @@ public class BottomSettings extends JPanel {
             if (file != null)
                 mainPanel.properties().setFastSavingDirectory(file.getParent());
             else {
-                wrapper.setBackground(normalBackgroudnd);
+                wrapper.setBackground(normalBackground);
                 fastSaving = false;
             }
         }
 
         else {
-            wrapper.setBackground(normalBackgroudnd);
+            wrapper.setBackground(normalBackground);
         }
 
         mainPanel.setFastSaving(fastSaving);
