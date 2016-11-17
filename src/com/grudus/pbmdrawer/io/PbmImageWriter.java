@@ -42,7 +42,7 @@ public class PbmImageWriter {
                 .append(rows)
                 .append("\n");
 
-        boolean[][] data = panel.getPaintedPoints();
+        boolean[][] data = panel.getImage().getImage();
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {

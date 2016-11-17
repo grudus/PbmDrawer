@@ -1,6 +1,7 @@
 package com.grudus.pbmdrawer.components;
 
-import com.grudus.pbmdrawer.PbmDrawerProperties;
+import com.grudus.pbmdrawer.images.PbmImage;
+import com.grudus.pbmdrawer.properties.PbmDrawerProperties;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -85,8 +86,8 @@ public class MainPanel extends JPanel {
         return drawerRows;
     }
 
-    public boolean[][] getPaintedPoints() {
-        return drawer.getPaintedPoints();
+    public PbmImage getImage() {
+        return drawer.getImage();
     }
 
     public void changeGridEnable() {

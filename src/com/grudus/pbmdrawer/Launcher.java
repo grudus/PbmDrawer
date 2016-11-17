@@ -3,6 +3,7 @@ package com.grudus.pbmdrawer;
 
 import com.grudus.pbmdrawer.components.MainPanel;
 import com.grudus.pbmdrawer.components.Window;
+import com.grudus.pbmdrawer.properties.PbmDrawerProperties;
 
 import javax.swing.*;
 import java.io.IOException;

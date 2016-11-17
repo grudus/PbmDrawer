@@ -2,7 +2,7 @@ package com.grudus.pbmdrawer.components;
 
 import com.grudus.pbmdrawer.components.dialogs.ResizeDialog;
 import com.grudus.pbmdrawer.components.reusable.IconWrapper;
-import com.grudus.pbmdrawer.io.FileChooserHelper;
+import com.grudus.pbmdrawer.io.FileChooser;
 import com.grudus.pbmdrawer.io.PbmImageReader;
 import com.grudus.pbmdrawer.io.PbmImageWriter;
 
@@ -123,7 +123,7 @@ public class BottomSettings extends JPanel {
                 if (desc.equals("clear_all")) {
                     mainPanel.clearAll();
                 } else if (desc.equals("save")) {
-                    File file = FileChooserHelper.selectFile(mainPanel.properties().getSaveDirectory(), FileChooserHelper.Option.SAVE);
+                    File file = FileChooser.selectFile(mainPanel.properties().getSaveDirectory(), FileChooser.Option.SAVE);
                     button.setBackground(normalBackground);
 
                     if (file != null) {
@@ -137,7 +137,7 @@ public class BottomSettings extends JPanel {
                 } else if (desc.equals("fast_save")) {
                     enableFastSaving(button, !fastSaving);
                 } else if (desc.equals("load")) {
-                    File file = FileChooserHelper.selectFile(mainPanel.properties().getSaveDirectory(), FileChooserHelper.Option.LOAD);
+                    File file = FileChooser.selectFile(mainPanel.properties().getSaveDirectory(), FileChooser.Option.LOAD);
                     button.setBackground(normalBackground);
                     if (file == null) return;
 
@@ -172,7 +172,7 @@ public class BottomSettings extends JPanel {
             JOptionPane.showMessageDialog(null, mainPanel.properties().getFastSavingInfo());
             wrapper.setBackground(clickedBackground);
 
-            File file = FileChooserHelper.selectFile(mainPanel.properties().getFastSavingDirectory(), FileChooserHelper.Option.SAVE);
+            File file = FileChooser.selectFile(mainPanel.properties().getFastSavingDirectory(), FileChooser.Option.SAVE);
 
             if (file != null)
                 mainPanel.properties().setFastSavingDirectory(file.getParent());

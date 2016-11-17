@@ -1,8 +1,8 @@
 package com.grudus.pbmdrawer.components.dialogs;
 
 
-import com.grudus.pbmdrawer.PbmDrawerProperties;
 import com.grudus.pbmdrawer.components.reusable.InputField;
+import com.grudus.pbmdrawer.properties.PbmDrawerProperties;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

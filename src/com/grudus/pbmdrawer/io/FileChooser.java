@@ -3,7 +3,7 @@ package com.grudus.pbmdrawer.io;
 import java.awt.*;
 import java.io.File;
 
-public class FileChooserHelper {
+public class FileChooser {
 
     public enum Option {
         SAVE(FileDialog.SAVE),

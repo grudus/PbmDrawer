@@ -1,7 +1,7 @@
 package com.grudus.pbmdrawer.components.reusable;
 
 
-import com.grudus.pbmdrawer.PbmDrawerProperties;
+import com.grudus.pbmdrawer.properties.PbmDrawerProperties;
 
 import javax.swing.*;
 import javax.swing.border.Border;

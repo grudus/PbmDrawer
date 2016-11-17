@@ -1,5 +1,6 @@
 package com.grudus.pbmdrawer.components;
 
+import com.grudus.pbmdrawer.images.PbmImage;
 import com.grudus.pbmdrawer.io.PbmImageWriter;
 
 import javax.swing.*;
@@ -20,7 +21,8 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     private boolean fastSaving;
     private boolean gridIsEnabled;
 
-    private boolean[][] paintedPoints;
+    private PbmImage image;
+
     private Tile repaintedTile;
 
     private Color lineColor;
@@ -38,7 +40,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         backgroundColor = mainPanel.properties().getDrawerBackgroundColor();
 
         setBackground(backgroundColor);
-        paintedPoints = new boolean[rows][columns];
+        image = new PbmImage(rows, columns);
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -69,12 +71,12 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         }
 
         if (refresh) {
-            handleResized(g);
+            handleRefresh(g);
             refresh = false;
         }
     }
 
-    private void handleResized(Graphics g) {
+    private void handleRefresh(Graphics g) {
         drawTiles(g);
         if (gridIsEnabled)
             drawLines(g);
@@ -85,7 +87,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < columns; c++) {
-                if (paintedPoints[r][c]) {
+                if (image.getImage()[r][c]) {
                     g.fillRect(c * tileWidth+1, r * tileHeight+1, tileWidth-1, tileHeight-1);
                 }
             }
@@ -119,8 +121,8 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
     private void drawRect(int tileX, int tileY, boolean cleanRect) {
 
-        if (paintedPoints[tileY][tileX] == cleanRect) {
-            paintedPoints[tileY][tileX] = !cleanRect;
+        if (image.getImage()[tileY][tileX] == cleanRect) {
+            image.fill(tileY, tileX, !cleanRect);
             repaintedTile = new Tile(tileX * tileWidth, tileY * tileHeight, tileWidth, tileHeight, !cleanRect);
             repaint(repaintedTile.toRectangle());
         }
@@ -130,7 +132,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     public void clearAll() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++)
-                paintedPoints[i][j] = false;
+                image.fill(i, j, false);
         }
         refresh = true;
         repaint();
@@ -142,8 +144,8 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         repaint();
     }
 
-    public boolean[][] getPaintedPoints() {
-        return paintedPoints;
+    public PbmImage getImage() {
+        return image;
     }
 
     public void changeGridEnabled() {
@@ -156,7 +158,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     public void changeGrid(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
-        this.paintedPoints = new boolean[rows][columns];
+        this.image = new PbmImage(rows, columns);
         repaintedTile = null;
         refresh = true;
         resize();
@@ -224,7 +226,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     }
 
     public void addImage(boolean[][] image) {
-        this.paintedPoints = image;
+        this.image = new PbmImage(image);
         refresh = true;
         repaint();
     }

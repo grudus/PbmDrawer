@@ -1,4 +1,4 @@
-package com.grudus.pbmdrawer;
+package com.grudus.pbmdrawer.properties;
 
 
 import com.grudus.pbmdrawer.helpers.ColorHelper;
