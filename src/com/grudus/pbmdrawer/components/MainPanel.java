@@ -115,4 +115,8 @@ public class MainPanel extends JPanel {
         changeGrid(image.length, image[0].length);
         drawer.addImage(image);
     }
+
+    public void changeCursorSize(int i, int j) {
+        drawer.changeCursorSize(1, 1);
+    }
 }

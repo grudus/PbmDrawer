@@ -145,19 +145,13 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
                 int tileX = x / columnWidth + c;
                 int tileY = y / rowHeight + r;
 
-                drawRect(tileX, tileY, cleanRect);
+                if (tileX < 0 || tileY < 0 || tileY > image.getWidth()-1 || tileX > image.getHeight()-1) {
+                    continue;
+                }
+
+                image.fill(tileY, tileX, !cleanRect);
             }
         }
-    }
-
-    private void drawRect(int tileX, int tileY, boolean cleanRect) {
-
-        if (image.getImage()[tileY][tileX] == cleanRect) {
-            image.fill(tileY, tileX, !cleanRect);
-            repaintedTile = new Tile(tileX * tileWidth, tileY * tileHeight, tileWidth, tileHeight, !cleanRect);
-            repaint(repaintedTile.toRectangle());
-        }
-
     }
 
     public void clearAll() {
@@ -172,8 +166,9 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     private void resize() {
         columnWidth = getWidth() / columns;
         rowHeight =  getHeight() / rows;
-        tileWidth = columnWidth * 2;
-        tileHeight = rowHeight * 3;
+
+        tileWidth = columnWidth * 1;
+        tileHeight = rowHeight * 1;
         cursorTile.setSize(tileWidth, tileHeight);
         repaint();
 
@@ -203,6 +198,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     public void mouseClicked(MouseEvent mouseEvent) {
         //when user press right button on mouse metaDown is true
         drawRect(mouseEvent.isMetaDown());
+        repaint(cursorTile.toRectangle());
 
     }
 
@@ -274,6 +270,9 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         int x = mouseEvent.getX();
         int y = mouseEvent.getY();
 
+        int scaleX = (1+tileWidth) / columnWidth;
+        int scaleY = (1+tileHeight) / rowHeight;
+
         int tileX = x / columnWidth;
         int tileY = y / rowHeight;
 
@@ -290,5 +289,14 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         this.image = new PbmImage(image);
         refresh = true;
         repaint();
+    }
+
+    public void changeCursorSize(int i, int i1) {
+        int scale = tileWidth / columnWidth;
+        scale = (scale % 3) + 1;
+
+        tileWidth = columnWidth * scale;
+        tileHeight = rowHeight * scale;
+        cursorTile.setSize(tileWidth, tileHeight);
     }
 }

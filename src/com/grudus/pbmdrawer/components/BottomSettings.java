@@ -23,7 +23,7 @@ public class BottomSettings extends JPanel {
 
     private String iconsPath;
     private String iconsFormat;
-    private static final String[] BUTTON_IMAGES = {"clear_all", "grid", "resize", "save", "load", "fast_save"};
+    private static final String[] BUTTON_IMAGES = {"clear_all", "grid", "resize", "cursor_size" ,  "save", "load", "fast_save"};
     private static final IconWrapper[] BUTTONS = new IconWrapper[BUTTON_IMAGES.length];
 
     private Color normalBackground;
@@ -57,7 +57,6 @@ public class BottomSettings extends JPanel {
         else
             this.height = parentHeight / 16;
 
-        System.out.println("new size: " + parentHeight);
         resizeImages();
     }
 
@@ -132,7 +131,12 @@ public class BottomSettings extends JPanel {
                     }
                 } else if (desc.equals("grid")) {
                     mainPanel.changeGridEnable();
-                } else if (desc.equals("resize")) {
+                }
+                else if (desc.equals("cursor_size")) {
+                    mainPanel.changeCursorSize(1, 1);
+                }
+
+                else if (desc.equals("resize")) {
                     new ResizeDialog(mainPanel.properties(), (mainPanel::changeGrid)).setVisible(true);
                 } else if (desc.equals("fast_save")) {
                     enableFastSaving(button, !fastSaving);
