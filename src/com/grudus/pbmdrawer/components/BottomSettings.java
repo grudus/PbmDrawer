@@ -51,6 +51,26 @@ public class BottomSettings extends JPanel {
         addListeners();
     }
 
+    public void newSize(int parentHeight) {
+        if (parentHeight <  330)
+            this.height = parentHeight / 8;
+        else
+            this.height = parentHeight / 16;
+
+        System.out.println("new size: " + parentHeight);
+        resizeImages();
+    }
+
+    private void resizeImages() {
+
+        try {
+            addIcons();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void addButtons() {
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -93,7 +113,7 @@ public class BottomSettings extends JPanel {
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
                 super.mousePressed(mouseEvent);
-                if (! (mouseEvent.getSource() instanceof IconWrapper)) return;
+                if (!(mouseEvent.getSource() instanceof IconWrapper)) return;
                 IconWrapper button = (IconWrapper) mouseEvent.getSource();
 
                 button.setBackground(clickedBackground);
@@ -102,8 +122,7 @@ public class BottomSettings extends JPanel {
 
                 if (desc.equals("clear_all")) {
                     mainPanel.clearAll();
-                }
-                else if (desc.equals("save")) {
+                } else if (desc.equals("save")) {
                     File file = FileChooserHelper.selectFile(mainPanel.properties().getSaveDirectory(), FileChooserHelper.Option.SAVE);
                     button.setBackground(normalBackground);
 
@@ -111,17 +130,13 @@ public class BottomSettings extends JPanel {
                         new PbmImageWriter(mainPanel).saveImage(file);
                         mainPanel.properties().setSaveDirectory(file.getParent());
                     }
-                }
-                else if (desc.equals("grid")) {
+                } else if (desc.equals("grid")) {
                     mainPanel.changeGridEnable();
-                }
-                else if (desc.equals("resize")) {
+                } else if (desc.equals("resize")) {
                     new ResizeDialog(mainPanel.properties(), (mainPanel::changeGrid)).setVisible(true);
-                }
-                else if (desc.equals("fast_save")) {
+                } else if (desc.equals("fast_save")) {
                     enableFastSaving(button, !fastSaving);
-                }
-                else if (desc.equals("load")) {
+                } else if (desc.equals("load")) {
                     File file = FileChooserHelper.selectFile(mainPanel.properties().getSaveDirectory(), FileChooserHelper.Option.LOAD);
                     button.setBackground(normalBackground);
                     if (file == null) return;
@@ -165,9 +180,7 @@ public class BottomSettings extends JPanel {
                 wrapper.setBackground(normalBackground);
                 fastSaving = false;
             }
-        }
-
-        else {
+        } else {
             wrapper.setBackground(normalBackground);
         }
 

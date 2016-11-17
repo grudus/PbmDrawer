@@ -20,12 +20,15 @@ public class MainPanel extends JPanel {
     private final PbmDrawerProperties properties;
     private BottomSettings settings;
 
+    private boolean bottomSettingsResizable;
+
     private JPanel drawerWrapper;
 
     public MainPanel(PbmDrawerProperties properties) {
         this.properties = properties;
         setBackground(properties.getMainBackgroundColor());
 
+        bottomSettingsResizable = properties.isBottomSettingsResizable();
 
         drawerColumns = properties.getGridColumns();
         drawerRows = properties.getGridRows();
@@ -49,6 +52,8 @@ public class MainPanel extends JPanel {
             public void componentResized(ComponentEvent componentEvent) {
                 super.componentResized(componentEvent);
                 resizeDrawer();
+                if (bottomSettingsResizable)
+                    settings.newSize(getHeight());
             }
         });
     }

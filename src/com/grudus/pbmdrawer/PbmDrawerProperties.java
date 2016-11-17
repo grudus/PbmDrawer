@@ -41,6 +41,7 @@ public class PbmDrawerProperties {
     private String applicationName;
 
     private String fastSavingInfo;
+    private boolean bottomSettingsResizable;
 
 
     private final File propertiesFile;
@@ -88,6 +89,7 @@ public class PbmDrawerProperties {
         windowSize = new Dimension(Integer.parseInt(properties.getProperty("window_width")),
                 Integer.parseInt(properties.getProperty("window_height")));
 
+        bottomSettingsResizable = properties.getProperty("bottom_settings_resizable").equals("true");
 
         fileDialogTitle = properties.getProperty("file_dialog_title");
         fastSavingFileName = properties.getProperty("fast_saving_filename");
@@ -323,5 +325,14 @@ public class PbmDrawerProperties {
     public void setFastSavingInfo(String fastSavingInfo) {
         this.fastSavingInfo = fastSavingInfo;
         saveProperty("fast_saving_info", fastSavingInfo);
+    }
+
+    public boolean isBottomSettingsResizable() {
+        return bottomSettingsResizable;
+    }
+
+    public void setBottomSettingsResizable(boolean bottomSettingsResizable) {
+        this.bottomSettingsResizable = bottomSettingsResizable;
+        saveProperty("bottom_settings_resizable", bottomSettingsResizable ? "true" : "false");
     }
 }
