@@ -186,9 +186,9 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     }
 
     public void changeGrid(int rows, int columns) {
+        image.resizeImage(rows, columns);
         this.rows = rows;
         this.columns = columns;
-        this.image = new PbmImage(rows, columns);
         repaintedTile = null;
         refresh = true;
         resize();
