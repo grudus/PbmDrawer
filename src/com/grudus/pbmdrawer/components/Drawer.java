@@ -24,6 +24,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
     private PbmImage image;
 
+
     private Tile repaintedTile;
     private Tile cursorTile;
 
@@ -112,7 +113,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < columns; c++) {
                 if (image.getImage()[r][c]) {
-                    g.fillRect(c * columnWidth+1, r * rowHeight+1, columnWidth-1, rowHeight-1);
+                    g.fillRect(c * columnWidth, r * rowHeight, columnWidth, rowHeight);
                 }
             }
         }
