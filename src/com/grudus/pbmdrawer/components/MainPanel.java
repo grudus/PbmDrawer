@@ -4,7 +4,6 @@ import com.grudus.pbmdrawer.images.PbmImage;
 import com.grudus.pbmdrawer.properties.PbmDrawerProperties;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -77,11 +76,7 @@ public class MainPanel extends JPanel {
         int horizontalGap_2 = (initDrawerWidth - tileWidth * drawerColumns) / 2;
         int verticalGap_2 =( initDrawertHeight - tileHeight * drawerRows) / 2;
 
-        System.out.println(String.format("initDrawerWidth %d tile initDrawertHeight %d hgap2 %d vgap %d", initDrawerWidth, initDrawertHeight, horizontalGap_2, verticalGap_2));
-
-        Border b = new EmptyBorder(verticalGap_2, horizontalGap_2, verticalGap_2, horizontalGap_2);
-
-        drawerWrapper.setBorder(b);
+        drawerWrapper.setBorder(new EmptyBorder(verticalGap_2, horizontalGap_2, verticalGap_2, horizontalGap_2));
         drawer.setSize(new Dimension(tileWidth * drawerColumns, tileHeight * drawerRows));
 
     }

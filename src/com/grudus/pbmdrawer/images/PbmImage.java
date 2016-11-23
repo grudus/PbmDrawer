@@ -48,25 +48,25 @@ public class PbmImage {
         int columns = getWidth();
 
 //        todo rename
-        boolean[][] temporary = new boolean[rows * newRows][columns * newColumns];
+//        boolean[][] temporary = new boolean[rows * newRows][columns * newColumns];
+//
+//        for (int row = 0; row < rows; row++) {
+//            for (int col = 0; col < columns; col++) {
+//                if(image[row][col])
+//                    initTemporary(temporary, row, col, newRows);
+//            }
+//        }
+//
+//
+//
+//        for (int row = 0; row < newRows; row++) {
+//            for (int col = 0; col < newColumns; col++) {
+//                if (isPixel(temporary, row, col, rows))
+//                    newImage[row][col] = true;
+//            }
+//        }
 
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < columns; col++) {
-                if(image[row][col])
-                    initTemporary(temporary, row, col, newRows);
-            }
-        }
-
-
-
-        for (int row = 0; row < newRows; row++) {
-            for (int col = 0; col < newColumns; col++) {
-                if (isPixel(temporary, row, col, rows))
-                    newImage[row][col] = true;
-            }
-        }
-
-        image = newImage;
+        this.image = newImage;
     }
 
 

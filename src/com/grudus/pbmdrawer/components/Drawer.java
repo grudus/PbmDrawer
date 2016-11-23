@@ -147,7 +147,7 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
                 int tileX = x / columnWidth + c;
                 int tileY = y / rowHeight + r;
 
-                if (tileX < 0 || tileY < 0 || tileY > image.getWidth()-1 || tileX > image.getHeight()-1) {
+                if (tileX < 0 || tileY < 0 || tileY > image.getHeight()-1 || tileX > image.getWidth()-1) {
                     continue;
                 }
 
@@ -188,9 +188,10 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
     }
 
     public void changeGrid(int rows, int columns) {
-        image.resizeImage(rows, columns);
+        System.out.println("change grid");
         this.rows = rows;
         this.columns = columns;
+        image.resizeImage(rows, columns);
         repaintedTile = null;
         refresh = true;
         resize();
@@ -346,6 +347,6 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
 //        mainPanel.addDrawerImage(newImage);
 
-        repaint();
+//        repaint();
     }
 }

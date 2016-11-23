@@ -129,12 +129,6 @@ public class ResizeDialog extends JDialog {
                 int newRows = Integer.parseInt(rows.getText());
                 int newColumns = Integer.parseInt(columns.getText());
 
-                // TODO: 23.11.16 remove
-                if (newRows != newColumns) {
-                    JOptionPane.showMessageDialog(null, "Rows and columns must be the same");
-                    return;
-                }
-
                 listener.ok(newRows, newColumns);
 
                 setVisible(false);
