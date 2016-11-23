@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Arrays;
 
 
 public class Drawer extends JPanel implements MouseListener, MouseMotionListener, ComponentListener {
@@ -299,5 +300,52 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
         tileWidth = columnWidth * scale;
         tileHeight = rowHeight * scale;
         cursorTile.setSize(tileWidth, tileHeight);
+    }
+
+    public void findImageRange() {
+        Insets insets = image.findImageRange();
+
+
+        Graphics g =getGraphics();
+        g.setColor(Color.RED);
+
+        int width = insets.right+1 - insets.left-1 +1;
+        int height = insets.bottom+1 - insets.top - 1 + 1;
+
+        boolean[][] newImage = new boolean[height][width];
+
+        for (int r = insets.top; r < insets.bottom+1; r++) {
+            g.fillRect((insets.left-1)*columnWidth, r * rowHeight, columnWidth, rowHeight);
+            g.fillRect((insets.right+1)*columnWidth, r * rowHeight, columnWidth, rowHeight);
+        }
+
+        for (int c = insets.left; c < insets.right + 1; c++) {
+            g.fillRect(c*columnWidth, (insets.top-1) * rowHeight, columnWidth, rowHeight);
+            g.fillRect(c*columnWidth, (insets.bottom+1) * rowHeight, columnWidth, rowHeight);
+        }
+
+        for (int r = insets.top, i = 0; r < insets.bottom+1; r++, i++) {
+            for (int c = insets.left, j = 0; c < insets.right + 1; c++, j++) {
+                if (image.getImage()[r][c])
+                    newImage[i][j] = true;
+            }
+        }
+
+        Arrays.stream(newImage).
+                map(it -> {
+                    int[] d = new int[it.length];
+                    for (int i = 0; i < d.length; i++) {
+                        if (it[i])
+                            d[i] = 1;
+                        else
+                            d[i] = 0;
+                    }
+                    return d;
+                })
+                .forEach(it -> System.out.println(Arrays.toString(it)));
+
+//        mainPanel.addDrawerImage(newImage);
+
+        repaint();
     }
 }

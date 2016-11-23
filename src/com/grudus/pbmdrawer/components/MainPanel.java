@@ -22,6 +22,7 @@ public class MainPanel extends JPanel {
     private BottomSettings settings;
 
     private boolean bottomSettingsResizable;
+    private boolean pixelOnlySquare;
 
     private JPanel drawerWrapper;
 
@@ -33,6 +34,7 @@ public class MainPanel extends JPanel {
 
         drawerColumns = properties.getGridColumns();
         drawerRows = properties.getGridRows();
+        pixelOnlySquare = properties.isOnlySquare();
 
         MAIN_LAYOUT = new BorderLayout();
         setLayout(MAIN_LAYOUT);
@@ -63,15 +65,19 @@ public class MainPanel extends JPanel {
         int initDrawerWidth = getWidth();
         int initDrawertHeight = getHeight() - settings.getHeight();
 
+        if (pixelOnlySquare) {
+            initDrawerWidth = initDrawertHeight = Math.min(initDrawertHeight, initDrawerWidth);
+        }
+
         int tileWidth = initDrawerWidth / drawerColumns;
         int tileHeight = initDrawertHeight / drawerRows;
 
         int horizontalGap_2 = (initDrawerWidth - tileWidth * drawerColumns) / 2;
         int verticalGap_2 =( initDrawertHeight - tileHeight * drawerRows) / 2;
 
+        drawerWrapper.setBorder(new EmptyBorder(verticalGap_2, horizontalGap_2, verticalGap_2, horizontalGap_2));
         drawer.setSize(new Dimension(tileWidth * drawerColumns, tileHeight * drawerRows));
 
-        drawerWrapper.setBorder(new EmptyBorder(verticalGap_2, horizontalGap_2, verticalGap_2, horizontalGap_2));
     }
 
     public void clearAll() {
@@ -118,5 +124,9 @@ public class MainPanel extends JPanel {
 
     public void changeCursorSize(int i, int j) {
         drawer.changeCursorSize(1, 1);
+    }
+
+    public void findImageRange() {
+        drawer.findImageRange();
     }
 }

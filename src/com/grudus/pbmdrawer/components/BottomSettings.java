@@ -23,7 +23,7 @@ public class BottomSettings extends JPanel {
 
     private String iconsPath;
     private String iconsFormat;
-    private static final String[] BUTTON_IMAGES = {"clear_all", "grid", "resize", "cursor_size" ,  "save", "load", "fast_save"};
+    private static final String[] BUTTON_IMAGES = {"clear_all", "grid", "resize", "cursor_size", "zoom",  "save", "load", "fast_save"};
     private static final IconWrapper[] BUTTONS = new IconWrapper[BUTTON_IMAGES.length];
 
     private Color normalBackground;
@@ -134,6 +134,10 @@ public class BottomSettings extends JPanel {
                 }
                 else if (desc.equals("cursor_size")) {
                     mainPanel.changeCursorSize(1, 1);
+                }
+
+                else if (desc.equals("zoom")) {
+                    mainPanel.findImageRange();
                 }
 
                 else if (desc.equals("resize")) {

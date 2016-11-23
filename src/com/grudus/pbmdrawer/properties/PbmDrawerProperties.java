@@ -42,6 +42,7 @@ public class PbmDrawerProperties {
 
     private String fastSavingInfo;
     private boolean bottomSettingsResizable;
+    private boolean onlySquare;
 
 
     private final File propertiesFile;
@@ -96,6 +97,7 @@ public class PbmDrawerProperties {
         drawerWrapperBackground = Color.decode(properties.getProperty("drawer_wrapper_background"));
         applicationName = properties.getProperty("application_name");
         fastSavingInfo = properties.getProperty("fast_saving_info");
+        onlySquare = properties.getProperty("only_square").equals("1");
 
     }
 
@@ -334,5 +336,14 @@ public class PbmDrawerProperties {
     public void setBottomSettingsResizable(boolean bottomSettingsResizable) {
         this.bottomSettingsResizable = bottomSettingsResizable;
         saveProperty("bottom_settings_resizable", bottomSettingsResizable ? "true" : "false");
+    }
+
+    public boolean isOnlySquare() {
+        return onlySquare;
+    }
+
+    public void setOnlySquare(boolean onlySquare) {
+        this.onlySquare = onlySquare;
+        saveProperty("only_square", onlySquare ? "1" : "0");
     }
 }

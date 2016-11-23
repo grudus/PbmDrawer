@@ -1,6 +1,8 @@
 package com.grudus.pbmdrawer.images;
 
 
+import java.awt.*;
+
 public class PbmImage {
     private boolean[][] image;
 
@@ -92,5 +94,24 @@ public class PbmImage {
         return ratio >= 0.5;
     }
 
+    public Insets findImageRange() {
+        int left = getWidth(), bottom = 0, right = 0, top =  -1;
 
+        for (int r = 0; r < getHeight(); r++) {
+            for (int c = 0; c < getWidth(); c++) {
+                if (image[r][c]) {
+                    if (top == -1)
+                        top = r;
+                    if (c < left)
+                        left = c;
+                    if (r > bottom)
+                        bottom = r;
+                    if (c > right)
+                        right = c;
+                }
+            }
+        }
+
+        return new Insets(top, left, bottom, right);
+    }
 }
