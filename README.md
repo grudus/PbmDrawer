@@ -19,7 +19,7 @@ Remember, the `res` folder must be in the same directory as jar file.
 
 **Previews** <br/>
 When you draw something like this: <br/><br/>
-![screen1](https://lh6.googleusercontent.com/rrgxuG6KhD2mn7EHRSw6xMT7aMIJcWpfp-n-stWjLPhFd8xYO16q5ecpBJ4L_k-78h-xWmRNL943_eQ=w1600-h809-rw)
+![screen1](https://cloud.githubusercontent.com/assets/18220458/20608374/b6e9d482-b281-11e6-8d1f-1ec1ca370c5f.png)
 <br/><br/>
 You will receive .pbm file:
 ```
