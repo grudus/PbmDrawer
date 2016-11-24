@@ -1,6 +1,8 @@
 package com.grudus.pbmdrawer.images;
 
 
+import com.grudus.pbmdrawer.helpers.MathHelper;
+
 import java.awt.*;
 
 public class PbmImage {
@@ -47,47 +49,47 @@ public class PbmImage {
         int rows = getHeight();
         int columns = getWidth();
 
-//        todo rename
-//        boolean[][] temporary = new boolean[rows * newRows][columns * newColumns];
-//
-//        for (int row = 0; row < rows; row++) {
-//            for (int col = 0; col < columns; col++) {
-//                if(image[row][col])
-//                    initTemporary(temporary, row, col, newRows);
-//            }
-//        }
-//
-//
-//
-//        for (int row = 0; row < newRows; row++) {
-//            for (int col = 0; col < newColumns; col++) {
-//                if (isPixel(temporary, row, col, rows))
-//                    newImage[row][col] = true;
-//            }
-//        }
+        int tempHeight = MathHelper.lcm(newRows, rows);
+        int tempWidth = MathHelper.lcm(newColumns, columns);
+
+        boolean[][] temporary = new boolean[tempHeight][tempWidth];
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < columns; col++) {
+                if(image[row][col])
+                    initTemporary(temporary, row, col, tempWidth / columns, tempHeight / rows);
+            }
+        }
+
+        for (int row = 0; row < newRows; row++) {
+            for (int col = 0; col < newColumns; col++) {
+                if (isPixel(temporary, row, col, tempWidth / newColumns, tempHeight / newRows))
+                    newImage[row][col] = true;
+            }
+        }
 
         this.image = newImage;
     }
 
 
-    private void initTemporary(boolean[][] temporary, int row, int col, int scale) {
-        for (int r = 0; r < scale; r++) {
-            for (int c = 0; c < scale; c++) {
-                temporary[row*scale+r][scale*col+c] = true;
+    private void initTemporary(boolean[][] temporary, int row, int col, int scaleX, int scaleY) {
+        for (int r = 0; r < scaleY; r++) {
+            for (int c = 0; c < scaleX; c++) {
+                temporary[row*scaleY+r][scaleX*col+c] = true;
             }
         }
     }
 
-    private boolean isPixel(boolean[][] temporary, int row, int col, int scale) {
+    private boolean isPixel(boolean[][] temporary, int row, int col, int scaleX, int scaleY) {
         int counter = 0;
-        for (int r = 0; r < scale; r++) {
-            for (int c = 0; c < scale; c++) {
-                if (temporary[row*scale+r][scale*col+c])
+        for (int r = 0; r < scaleY; r++) {
+            for (int c = 0; c < scaleX; c++) {
+                if (temporary[row*scaleY+r][scaleX*col+c])
                     counter++;
             }
         }
 
-        int pole = scale * scale+1;
+        int pole = scaleY * scaleX+1;
 
         double ratio = ((double)counter ) / pole;
 
