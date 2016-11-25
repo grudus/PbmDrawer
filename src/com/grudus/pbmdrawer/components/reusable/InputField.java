@@ -55,12 +55,14 @@ public class InputField extends JTextField implements FocusListener {
             public void keyTyped(KeyEvent keyEvent) {
                 final char key = keyEvent.getKeyChar();
 
-                if (getText().length() == maxLength) {
+
+                if (getText().length() == maxLength && getSelectedText() == null) {
                     error = true;
                     showError(true);
                     keyEvent.consume();
                     return;
                 }
+
 
                 if (InputField.this.inputType == InputType.NUMBERS && !Character.isDigit(key)) {
                     showError(true);
