@@ -116,4 +116,17 @@ public class PbmImage {
 
         return new Insets(top, left, bottom, right);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int i =0; i < getHeight(); i++) {
+            for (int j = 0; j < getWidth(); j++) {
+                if (image[i][j]) builder.append("1 ");
+                else builder.append("0 ");
+            }
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
 }

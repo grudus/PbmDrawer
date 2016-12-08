@@ -23,7 +23,8 @@ public class BottomSettings extends JPanel {
 
     private String iconsPath;
     private String iconsFormat;
-    private static final String[] BUTTON_IMAGES = {"clear_all", "grid", "resize", "cursor_size", "zoom",  "save", "load", "fast_save"};
+    private static final String[] BUTTON_IMAGES =
+            {"clear_all", "grid", "resize", "cursor_size", "zoom",  "save", "load", "fast_save", "movie"};
     private static final IconWrapper[] BUTTONS = new IconWrapper[BUTTON_IMAGES.length];
 
     private Color normalBackground;
@@ -119,41 +120,59 @@ public class BottomSettings extends JPanel {
 
                 String desc = button.description;
 
-                if (desc.equals("clear_all")) {
-                    mainPanel.clearAll();
-                } else if (desc.equals("save")) {
-                    File file = FileChooser.selectFile(mainPanel.properties().getSaveDirectory(), FileChooser.Option.SAVE);
-                    button.setBackground(normalBackground);
+                switch (desc) {
+                    case "clear_all":
+                        mainPanel.clearAll();
+                        break;
+                    case "save": {
+                        File file = FileChooser.selectFile(mainPanel.properties().getSaveDirectory(), FileChooser.Option.SAVE);
+                        button.setBackground(normalBackground);
 
-                    if (file != null) {
-                        new PbmImageWriter(mainPanel).saveImage(file);
-                        mainPanel.properties().setSaveDirectory(file.getParent());
+                        if (file != null) {
+                            new PbmImageWriter(mainPanel).saveImage(file);
+                            mainPanel.properties().setSaveDirectory(file.getParent());
+                        }
+                        break;
                     }
-                } else if (desc.equals("grid")) {
-                    mainPanel.changeGridEnable();
-                }
-                else if (desc.equals("cursor_size")) {
-                    mainPanel.changeCursorSize(1, 1);
-                }
+                    case "grid":
+                        mainPanel.changeGridEnable();
+                        break;
+                    case "cursor_size":
+                        mainPanel.changeCursorSize(1, 1);
+                        break;
+                    case "zoom":
+                        mainPanel.findImageRange();
+                        break;
+                    case "resize":
+                        new ResizeDialog(mainPanel.properties(), (mainPanel::changeGrid)).setVisible(true);
+                        break;
+                    case "fast_save":
+                        enableFastSaving(button, !fastSaving);
+                        break;
+                    case "load": {
+                        File file = FileChooser.selectFile(mainPanel.properties().getSaveDirectory(), FileChooser.Option.LOAD);
+                        button.setBackground(normalBackground);
+                        if (file == null) return;
 
-                else if (desc.equals("zoom")) {
-                    mainPanel.findImageRange();
-                }
+                        try {
+                            boolean[][] image = new PbmImageReader().loadImage(file);
+                            mainPanel.addDrawerImage(image);
+                        } catch (IOException e) {
+                            JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+                        }
+                        break;
+                    }
+                    case "movie": {
+                        File file = FileChooser.selectFile(mainPanel.properties().getSaveDirectory(), FileChooser.Option.LOAD);
+                        button.setBackground(normalBackground);
+                        if (file == null) return;
 
-                else if (desc.equals("resize")) {
-                    new ResizeDialog(mainPanel.properties(), (mainPanel::changeGrid)).setVisible(true);
-                } else if (desc.equals("fast_save")) {
-                    enableFastSaving(button, !fastSaving);
-                } else if (desc.equals("load")) {
-                    File file = FileChooser.selectFile(mainPanel.properties().getSaveDirectory(), FileChooser.Option.LOAD);
-                    button.setBackground(normalBackground);
-                    if (file == null) return;
-
-                    try {
-                        boolean[][] image = new PbmImageReader().loadImage(file);
-                        mainPanel.addDrawerImage(image);
-                    } catch (IOException e) {
-                        JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+                        try {
+                            mainPanel.startFilm(file);
+                        } catch (IOException | InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        break;
                     }
                 }
             }

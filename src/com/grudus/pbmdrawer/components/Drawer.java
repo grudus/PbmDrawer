@@ -304,10 +304,9 @@ public class Drawer extends JPanel implements MouseListener, MouseMotionListener
 
     public void findImageRange() {
         Insets insets = image.findImageRange();
+        if (insets.top == -1)
+            return;
 
-
-        Graphics g =getGraphics();
-        g.setColor(Color.RED);
 
         int width = insets.right+1 - insets.left-1 +1;
         int height = insets.bottom+1 - insets.top - 1 + 1;

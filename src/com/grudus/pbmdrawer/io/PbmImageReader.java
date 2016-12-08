@@ -23,8 +23,8 @@ public class PbmImageReader {
         if (!source.exists())
             throw new FileNotFoundException("Cannot find file " + source);
 
-        if (!source.getName().endsWith(".pbm"))
-            throw new PbmImageException();
+//        if (!source.getName().endsWith(".pbm"))
+//            throw new PbmImageException();
 
 
         try (BufferedReader reader = new BufferedReader(new FileReader(source))) {

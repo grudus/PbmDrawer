@@ -1,5 +1,6 @@
 package com.grudus.pbmdrawer.components;
 
+import com.grudus.pbmdrawer.concurrency.MovieWorker;
 import com.grudus.pbmdrawer.images.PbmImage;
 import com.grudus.pbmdrawer.properties.PbmDrawerProperties;
 
@@ -8,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.File;
+import java.io.IOException;
 
 
 public class MainPanel extends JPanel {
@@ -129,5 +132,11 @@ public class MainPanel extends JPanel {
 
     public void findImageRange() {
         drawer.findImageRange();
+    }
+
+    public void startFilm(File file) throws IOException, InterruptedException {
+        MovieWorker worker = new MovieWorker(file.getParentFile(), 33, image -> drawer.addImage(image.getImage()));
+
+        worker.execute();
     }
 }

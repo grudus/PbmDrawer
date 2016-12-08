@@ -15,8 +15,8 @@ public class Window {
     }
 
     private void init() {
-        frame.setMinimumSize(new Dimension(frame.getWidth() / 2, frame.getHeight() / 2));
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setMinimumSize(new Dimension(200, 100));
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
 
